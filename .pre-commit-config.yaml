@@ -15,6 +15,6 @@ repos:
       # Le Linter (remplace Flake8) : Cherche les erreurs et corrige ce qu'il peut
       - id: ruff
         args: [ --fix ]
-      
+
       # Le Formatter (remplace Black) : Reformate le code pour qu'il soit beau
       - id: ruff-format
