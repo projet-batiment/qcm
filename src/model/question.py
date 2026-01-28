@@ -10,7 +10,8 @@ class QuestionQCM(Question):
         self.choix_rep = choix_rep
         self.id_bonne_reponse = id_bonne_reponse
 
+
 class QuestionLibre(Question):
-    def __init__(self, enonce : str, points : int, rep_attendue : str)
+    def __init__(self, enonce : str, points : int, rep_attendue : str):
         super().__init__(enonce, points)
         self.rep_attendue = rep_attendue
