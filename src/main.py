@@ -8,7 +8,7 @@ class Main:
     def __init__(self):
         self.window = Window()
 
-        ChoixUnique(self.window).pack()
+        ChoixUnique(self.window, choix=["a", "b", "c"]).pack()
 
     def main(self):
         self.window.mainloop()
