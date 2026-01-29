@@ -25,12 +25,20 @@ class Question(Base):
 class QuestionQCM(Question):
     __tablename__ = "questions_qcm"
     id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
-    choix_rep = relationship("Reponse", back_populates="question", cascade="all, delete-orphan")
+    choix_rep = relationship(
+        "Reponse", back_populates="question", cascade="all, delete-orphan"
+    )
     id_bonne_reponse = Column(Integer, nullable=True)
 
     __mapper_args__ = {"polymorphic_identity": "qcm"}
 
-    def __init__(self, enonce: str, points: int, choix_rep: list = None, id_bonne_reponse: int = -1):
+    def __init__(
+        self,
+        enonce: str,
+        points: int,
+        choix_rep: list = None,
+        id_bonne_reponse: int = -1,
+    ):
         super().__init__(enonce, points)
         self.choix_rep = choix_rep
         self.id_bonne_reponse = id_bonne_reponse
