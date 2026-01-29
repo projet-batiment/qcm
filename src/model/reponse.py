@@ -1,11 +1,20 @@
-class Reponse:
-    def __init__(self, texte: str, est_correcte: bool = False, feedback: str = ""):
-        self.texte = texte
-        self.est_correcte = est_correcte
-        self.feedback = feedback
+from abc import ABC, abstractmethod
+from question import Question
 
-    def __str__(self):
-        return self.texte
 
-    def __repr__(self):
-        return f"<Reponse(texte='{self.texte}', correct={self.est_correcte})"
+class Reponse(ABC):
+    """
+    Classe abstraite.
+    """
+
+    def __init__(self, question: Question):
+        self.question = question
+
+    @abstractmethod
+    def verifier(self) -> bool:
+        """
+        Vérifie la validité.
+        :param proposition_utilisateur: Utile pour la question libre (le texte saisi).
+                                        Ignoré pour le QCM (car l'objet sait déjà s'il est juste).
+        """
+        pass
