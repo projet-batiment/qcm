@@ -23,7 +23,7 @@ class Editeur(Frame):
         self.bas = Frame(self)
         self.bas.pack(side=BOTTOM, fill="x", expand=True)
         self.obligatoire_var = BooleanVar(value=obligatoire)
-        obligatoire_ui = Checkbutton(self.bas, text="Requis", variable=self.obligatoire_var)
+        obligatoire_ui = Checkbutton(self.bas, text="Obligatoire", variable=self.obligatoire_var)
         obligatoire_ui.pack(side=LEFT)
 
         def delete():

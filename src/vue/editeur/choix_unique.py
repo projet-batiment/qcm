@@ -9,8 +9,10 @@ class ChoixUnique(Editeur):
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
-
-        self.choix = [] if choix is None else choix
+        if choix is None:
+            self.choix = ["Option 1", "Option 2", "Option 3"]
+        else:
+            self.choix = choix
         self.choix_ui = []
         self.choix_var = IntVar(value=-1)
         self.vars = []
@@ -36,8 +38,7 @@ class ChoixUnique(Editeur):
 
             each_var = StringVar(value=each_choix)
             self.vars.append(each_var)
-            each_radio = Radiobutton(each_frame, value=i)
-            each_radio.config(state="disabled")
+            each_radio = Radiobutton(each_frame, value=i, variable=self.choix_var)
             each_radio.pack(side=LEFT)
             each_entry = Entry(each_frame, textvariable=each_var)
             each_entry.pack(side=LEFT)
