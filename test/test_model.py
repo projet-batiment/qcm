@@ -1,7 +1,7 @@
 import pytest
-from src.model.question import QuestionQCUnique, QuestionQCMultiples, QuestionLibre
-from src.model.reponse import ReponseQCUnique, ReponseQCMultiples, ReponseLibre
-from src.model.qcm import Qcm
+from model.question import QuestionQCUnique, QuestionQCMultiples, QuestionLibre
+from model.reponse import ReponseQCUnique, ReponseQCMultiples, ReponseLibre
+from model.qcm import Qcm
 
 
 def test_qcm_unique_verification():
