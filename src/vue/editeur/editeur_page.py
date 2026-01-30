@@ -1,4 +1,4 @@
-from ttkbootstrap import Frame, Button
+from ttkbootstrap import Frame, Button, Entry, StringVar
 from ttkbootstrap.scrolled import ScrolledFrame
 
 import logging
@@ -13,8 +13,11 @@ class EditeurPage(Frame):
         super().__init__(parent, width=800)
         self.pack_propagate(False)
 
-        self.questions = []
+        self.titre_var = StringVar(value="Titre du questionnaire")
+        self.titre = Entry(self, textvariable=self.titre_var)
+        self.titre.pack()
 
+        self.questions = []
         self.scroll_outer = ScrolledFrame(self, autohide=True)
         self.scroll_outer.pack(fill="both", expand=True, padx=20, pady=20)
         self.scroll_container = Frame(self.scroll_outer)
@@ -27,6 +30,7 @@ class EditeurPage(Frame):
             style="info"
         )
 
+        # TODO: uniquement si nouveau questionnaire
         self.ajouter_question()
 
     def _editeur_callback(self, command: CallbackCommand, question: Editeur):
