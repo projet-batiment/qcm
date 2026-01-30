@@ -30,7 +30,7 @@ class QuestionQCUnique(Question):
         """
         :param id_bonne_reponse: Un ENTIER de l'indice correct
         """
-        super().__init(enonce, points)
+        super().__init__(enonce, points)
         self.choix_rep = choix_rep
         self.id_bonne_reponse = id_bonne_reponse
 
