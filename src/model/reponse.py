@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any
-from src.model.question import (
+from model.question import (
     Question,
     QuestionLibre,
     QuestionQCMultiples,
