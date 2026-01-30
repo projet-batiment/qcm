@@ -1,10 +1,10 @@
 from ttkbootstrap import Frame, Entry, StringVar, BooleanVar, Checkbutton, Spinbox, IntVar, Label, Button
 from tkinter import TOP, BOTTOM, LEFT, RIGHT
 
-from typing import Callable
+from vue.editeur.editeur_callback_type import CallbackCommand
 
 class Editeur(Frame):
-    def __init__(self, parent, delete_callback: Callable[[], None], duplicate_callback: Callable[[], None], titre="Énoncé de la question", obligatoire=True, points=1):
+    def __init__(self, parent, page_callback, titre="Énoncé de la question", obligatoire=True, points=1):
         super().__init__(parent, width=600, borderwidth=2, relief="solid")
 
         self.haut = Frame(self)
@@ -28,8 +28,14 @@ class Editeur(Frame):
         obligatoire_ui = Checkbutton(self.bas, text="Obligatoire", variable=self.obligatoire_var)
         obligatoire_ui.pack(side=LEFT)
 
-        delete_button = Button(self.bas, text=" ⤫ ", command=lambda: delete_callback(self), style="warning")
+        delete_button = Button(self.bas, text=" ⤫ ", command=lambda: page_callback(CallbackCommand.DELETE, self), style="warning")
         delete_button.pack(side=RIGHT)
 
-        duplicate_button = Button(self.bas, text=" D ", command=lambda: duplicate_callback(self), style="info")
+        duplicate_button = Button(self.bas, text=" D ", command=lambda: page_callback(CallbackCommand.DUPLICATE, self), style="info")
         duplicate_button.pack(side=RIGHT)
+
+        each_move_down = Button(self.bas, text=" 🠋 ", command=lambda: page_callback(CallbackCommand.MOVE_DOWN, self))
+        each_move_down.pack(side=RIGHT)
+
+        each_move_up = Button(self.bas, text=" 🠉 ", command=lambda: page_callback(CallbackCommand.MOVE_UP, self))
+        each_move_up.pack(side=RIGHT)

@@ -4,8 +4,8 @@ from tkinter import LEFT, TOP, RIGHT, BOTTOM
 from .editeur import Editeur
 
 class ChoixUnique(Editeur):
-    def __init__(self, parent, choix=None, **kwargs):
-        super().__init__(parent, **kwargs)
+    def __init__(self, parent, choix=None, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
