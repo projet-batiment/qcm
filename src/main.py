@@ -2,6 +2,7 @@
 from ttkbootstrap import Window
 from vue.editeur.editeur_page import EditeurPage
 
+
 class Main:
     def __init__(self):
         self.window = Window(themename="flatly")

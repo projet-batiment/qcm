@@ -35,7 +35,6 @@ class ReponseQCMultiples(Reponse):
         On accède aux données via self.question.
         """
         qcm: QuestionQCMultiples = self.question
-
         return proposition_utilisateur in qcm.id_bonne_reponse
 
 
@@ -45,7 +44,6 @@ class ReponseQCUnique(Reponse):
 
     def verifier(self, proposition_utilisateur: int):
         qcu: QuestionQCUnique = self.question
-
         return proposition_utilisateur == qcu.id_bonne_reponse
 
 
