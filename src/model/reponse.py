@@ -1,11 +1,49 @@
-class Reponse:
-    def __init__(self, texte: str, est_correcte: bool = False, feedback: str = ""):
-        self.texte = texte
-        self.est_correcte = est_correcte
-        self.feedback = feedback
+from abc import ABC, abstractmethod
+from typing import Any
+from question import Question, QuestionLibre, QuestionQCM
 
-    def __str__(self):
-        return self.texte
 
-    def __repr__(self):
-        return f"<Reponse(texte='{self.texte}', correct={self.est_correcte})"
+class Reponse(ABC):
+    """
+    Classe abstraite qui lie une logique de vérification à une Question donnée.
+    """
+
+    def __init__(self, question: Question):
+        self.question = question
+
+    @abstractmethod
+    def verifier(self, proposition_utilisateur: Any) -> bool:
+        """
+        Vérifie la validité de la proposition utilisateur.
+        :param proposition_utilisateur: L'index (int) ou le texte (str) fourni par l'utilisateur.
+        """
+        pass
+
+
+class ReponseQCM(Reponse):
+    def __init__(self, question_QCM: QuestionQCM):
+        super().__init__(question_QCM)
+
+    def verifier(self, proposition_utilisateur: int) -> bool:
+        """
+        Vérifie si l'index choisi par l'utilisateur est dans la liste des bonnes réponses.
+        On accède aux données via self.question.
+        """
+        qcm: QuestionQCM = self.question
+
+        return proposition_utilisateur in qcm.id_bonne_reponse
+
+
+class ReponseLibre(Reponse):
+    def __init__(self, question_libre: QuestionLibre):
+        super().__init__(question_libre)
+
+    def verifier(self, proposition_utilisateur: str) -> bool:
+        """
+        Compare la saisie avec la réponse attendue stockée dans la question.
+        """
+        q_libre: QuestionLibre = self.question
+        return (
+            proposition_utilisateur.strip().lower()
+            == q_libre.rep_attendue.strip().lower()
+        )
