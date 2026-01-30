@@ -1,5 +1,5 @@
 from typing import List, Optional
-from .question import Question
+from model.question import Question
 
 
 class Qcm:
