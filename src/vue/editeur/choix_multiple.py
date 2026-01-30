@@ -2,17 +2,18 @@ from ttkbootstrap import Frame, Entry, Checkbutton, BooleanVar, Button, StringVa
 from tkinter import LEFT, TOP, RIGHT, BOTTOM
 from .editeur import Editeur
 
+
 class ChoixMultiple(Editeur):
     def __init__(self, parent, page_callback, choix=None, *args, **kwargs):
         super().__init__(parent, page_callback=page_callback, *args, **kwargs)
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
-        
+
         self.choix = ["Option 1", "Option 2", "Option 3"] if choix is None else choix
         self.choix_ui = []
-        self.vars_texte = [] 
-        self.vars_etat = []  
+        self.vars_texte = []
+        self.vars_etat = []
 
         def add():
             self.choix.append("Nouveau choix")
@@ -52,20 +53,27 @@ class ChoixMultiple(Editeur):
             def delete(i=i):
                 self.choix.pop(i)
                 self.update()
-            Button(each_frame, text=" ⤫ ", command=delete, style="warning").pack(side=RIGHT)
+
+            Button(each_frame, text=" ⤫ ", command=delete, style="warning").pack(
+                side=RIGHT
+            )
 
             def move_down(i=i):
-                self.choix.insert(i+1, self.choix.pop(i))
+                self.choix.insert(i + 1, self.choix.pop(i))
                 self.update()
+
             btn_down = Button(each_frame, text=" 🠋 ", command=move_down)
             btn_down.pack(side=RIGHT)
-            if i+1 == len(self.choix): btn_down.config(state="disabled")
+            if i + 1 == len(self.choix):
+                btn_down.config(state="disabled")
 
             def move_up(i=i):
-                self.choix.insert(i-1, self.choix.pop(i))
+                self.choix.insert(i - 1, self.choix.pop(i))
                 self.update()
+
             btn_up = Button(each_frame, text=" 🠉 ", command=move_up)
             btn_up.pack(side=RIGHT)
-            if i == 0: btn_up.config(state="disabled")
+            if i == 0:
+                btn_up.config(state="disabled")
 
             self.choix_ui.append(each_frame)
