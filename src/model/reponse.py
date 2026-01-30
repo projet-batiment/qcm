@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any
-from question import Question, QuestionLibre, QuestionQCM
+from question import Question, QuestionLibre, QuestionQCMultiples, QuestionQCUnique
 
 
 class Reponse(ABC):
@@ -20,18 +20,28 @@ class Reponse(ABC):
         pass
 
 
-class ReponseQCM(Reponse):
-    def __init__(self, question_QCM: QuestionQCM):
-        super().__init__(question_QCM)
+class ReponseQCMultiples(Reponse):
+    def __init__(self, question_QCMultiples: QuestionQCMultiples):
+        super().__init__(question_QCMultiples)
 
     def verifier(self, proposition_utilisateur: int) -> bool:
         """
         Vérifie si l'index choisi par l'utilisateur est dans la liste des bonnes réponses.
         On accède aux données via self.question.
         """
-        qcm: QuestionQCM = self.question
+        qcm: QuestionQCMultiples = self.question
 
         return proposition_utilisateur in qcm.id_bonne_reponse
+
+
+class ReponseQCUnique(Reponse):
+    def __init__(self, question_QCUnique: QuestionQCUnique):
+        super().__init__(question_QCUnique)
+
+    def verifier(self, proposition_utilisateur: int):
+        qcu: QuestionQCUnique = self.question
+
+        return proposition_utilisateur == qcu.id_bonne_reponse
 
 
 class ReponseLibre(Reponse):
