@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qcm_projet"
+version = "0.0.1"
+description = "Projet QCM"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    # Liste vide pour l'instant
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
