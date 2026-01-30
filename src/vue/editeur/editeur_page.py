@@ -1,5 +1,6 @@
 from ttkbootstrap import Frame, Button
 from ttkbootstrap.scrolled import ScrolledFrame
+
 import logging
 
 from vue.editeur.editeur_callback_type import CallbackCommand
@@ -9,20 +10,22 @@ from vue.editeur.editeur import Editeur
 
 class EditeurPage(Frame):
     def __init__(self, parent):
-        super().__init__(parent)
+        super().__init__(parent, width=800)
+        self.pack_propagate(False)
 
         self.questions = []
 
+        self.scroll_outer = ScrolledFrame(self, autohide=True)
+        self.scroll_outer.pack(fill="both", expand=True, padx=20, pady=20)
+        self.scroll_container = Frame(self.scroll_outer)
+        self.scroll_container.pack(fill="both", expand=True, padx=(0, 10))
+
         self.btn_ajouter = Button(
-            self,
+            self.scroll_container,
             text="➕ Ajouter une nouvelle question",
             command=self.ajouter_question,
             style="info"
         )
-        self.btn_ajouter.pack(pady=10)
-
-        self.scroll_container = ScrolledFrame(self, autohide=True)
-        self.scroll_container.pack(fill="both", expand=True, padx=20, pady=20)
 
         self.ajouter_question()
 
@@ -55,6 +58,9 @@ class EditeurPage(Frame):
         for each in self.questions:
             each.pack_forget()
             each.pack(fill="x", pady=10)
+
+        self.btn_ajouter.pack_forget()
+        self.btn_ajouter.pack(pady=10)
 
     def ajouter_question(self):
         self.questions.append(ChoixUnique(

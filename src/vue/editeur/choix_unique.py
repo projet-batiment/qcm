@@ -20,8 +20,10 @@ class ChoixUnique(Editeur):
         def add():
             self.choix.append("Nouveau choix")
             self.update()
-        add_button = Button(self.container, text="Ajouter", command=add)
-        add_button.pack(side=BOTTOM)
+        add_button_container = Frame(self.container)
+        add_button_container.pack(side=BOTTOM, expand=True, fill="x")
+        add_button = Button(add_button_container, text="Ajouter", command=add)
+        add_button.pack(side=LEFT)
 
         self.update()
 
