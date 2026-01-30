@@ -21,7 +21,7 @@ def test_qcm_multiple_verification():
         enonce="Fruits rouges ?",
         points=1,
         choix_rep=["Fraise", "Banane", "Cerise"],
-        id_bonne_reponse=[0, 2],  # Fraise et Cerise
+        index_bonne_reponse=[0, 2],  # Fraise et Cerise
     )
     verif = ReponseQCMultiples(q)
     assert verif.verifier(0) is True
