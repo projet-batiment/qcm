@@ -3,6 +3,7 @@ from tkinter import LEFT, TOP, RIGHT, BOTTOM
 
 from .editeur import Editeur
 
+
 class ChoixUnique(Editeur):
     def __init__(self, parent, choix=None, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
@@ -20,6 +21,7 @@ class ChoixUnique(Editeur):
         def add():
             self.choix.append("Nouveau choix")
             self.update()
+
         add_button_container = Frame(self.container)
         add_button_container.pack(side=BOTTOM, expand=True, fill="x")
         add_button = Button(add_button_container, text="Ajouter", command=add)
@@ -48,20 +50,25 @@ class ChoixUnique(Editeur):
             def delete(i=i):
                 self.choix.pop(i)
                 self.update()
-            each_delete = Button(each_frame, text=" ⤫ ", command=delete, style="warning")
+
+            each_delete = Button(
+                each_frame, text=" ⤫ ", command=delete, style="warning"
+            )
             each_delete.pack(side=RIGHT)
 
             def move_down(i=i):
-                self.choix.insert(i+1, self.choix.pop(i))
+                self.choix.insert(i + 1, self.choix.pop(i))
                 self.update()
+
             each_move_down = Button(each_frame, text=" 🠋 ", command=move_down)
             each_move_down.pack(side=RIGHT)
-            if i+1 == len(self.choix):
+            if i + 1 == len(self.choix):
                 each_move_down.config(state="disabled")
 
             def move_up(i=i):
-                self.choix.insert(i-1, self.choix.pop(i))
+                self.choix.insert(i - 1, self.choix.pop(i))
                 self.update()
+
             each_move_up = Button(each_frame, text=" 🠉 ", command=move_up)
             each_move_up.pack(side=RIGHT)
             if i == 0:
