@@ -1,0 +1,20 @@
+# .pre-commit-config.yaml
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace    # Supprime les espaces inutiles en fin de ligne
+      - id: end-of-file-fixer      # Ajoute une ligne vide à la fin (standard Linux/Git)
+      - id: check-yaml             # Vérifie que ce fichier config est valide
+      - id: check-added-large-files # Empêche d'envoyer des fichiers > 500kb par erreur
+
+  #Ruff : (Remplace Black, Flake8 et isort)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.14
+    hooks:
+      # Le Linter (remplace Flake8) : Cherche les erreurs et corrige ce qu'il peut
+      - id: ruff
+        args: [ --fix ]
+
+      # Le Formatter (remplace Black) : Reformate le code pour qu'il soit beau
+      - id: ruff-format
