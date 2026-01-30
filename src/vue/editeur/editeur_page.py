@@ -1,5 +1,6 @@
 from ttkbootstrap import Frame, Button
 from ttkbootstrap.scrolled import ScrolledFrame
+import logging
 
 from vue.editeur.choix_unique import ChoixUnique
 
@@ -23,7 +24,20 @@ class EditeurPage(Frame):
         self.ajouter_question()
 
     def ajouter_question(self):
-        nouvelle = ChoixUnique(self.scroll_container)
+        index = len(self.questions)
+
+        nouvelle = ChoixUnique(
+            self.scroll_container,
+            delete_callback=self.supprimer_question,
+            duplicate_callback=lambda: NotImplemented,
+        )
         nouvelle.pack(fill="x", pady=10)
 
         self.questions.append(nouvelle)
+
+    def supprimer_question(self, question):
+        question.pack_forget()
+        try:
+            self.questions.pop(self.questions.index(question))
+        except ValueError:
+            logging.error("question not found in the list")
