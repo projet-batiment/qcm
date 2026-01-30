@@ -1,11 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any
-from src.model.question import (
-    Question,
-    QuestionLibre,
-    QuestionQCMultiples,
-    QuestionQCUnique,
-)
+from .question import Question, QuestionQCUnique, QuestionLibre, QuestionQCMultiples
 
 
 class Reponse(ABC):
