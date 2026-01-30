@@ -4,8 +4,8 @@ from tkinter import LEFT, TOP, RIGHT, BOTTOM
 from .editeur import Editeur
 
 class ChoixUnique(Editeur):
-    def __init__(self, parent, choix=None, **kwargs):
-        super().__init__(parent, **kwargs)
+    def __init__(self, parent, choix=None, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
@@ -20,8 +20,10 @@ class ChoixUnique(Editeur):
         def add():
             self.choix.append("Nouveau choix")
             self.update()
-        add_button = Button(self.container, text="Ajouter", command=add)
-        add_button.pack(side=BOTTOM)
+        add_button_container = Frame(self.container)
+        add_button_container.pack(side=BOTTOM, expand=True, fill="x")
+        add_button = Button(add_button_container, text="Ajouter", command=add)
+        add_button.pack(side=LEFT)
 
         self.update()
 

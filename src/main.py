@@ -8,7 +8,7 @@ class Main:
         self.window.title("QCM LPORM")
         self.window.geometry("900x700")
 
-        EditeurPage(self.window).pack(fill="both", expand=True)
+        EditeurPage(self.window).pack(fill="y", expand=True)
 
     def main(self):
         self.window.mainloop()
