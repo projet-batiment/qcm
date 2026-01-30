@@ -1,11 +1,9 @@
 from ttkbootstrap import Frame, Button, Entry, StringVar
 from ttkbootstrap.scrolled import ScrolledFrame
-
 import logging
-
 from vue.editeur.editeur_callback_type import CallbackCommand
-
 from vue.editeur.choix_unique import ChoixUnique
+from vue.editeur.choix_multiple import ChoixMultiple 
 from vue.editeur.editeur import Editeur
 
 class EditeurPage(Frame):
@@ -15,7 +13,7 @@ class EditeurPage(Frame):
 
         self.titre_var = StringVar(value="Titre du questionnaire")
         self.titre = Entry(self, textvariable=self.titre_var)
-        self.titre.pack()
+        self.titre.pack(pady=10)
 
         self.questions = []
         self.scroll_outer = ScrolledFrame(self, autohide=True)
@@ -30,7 +28,6 @@ class EditeurPage(Frame):
             style="info"
         )
 
-        # TODO: uniquement si nouveau questionnaire
         self.ajouter_question()
 
     def _editeur_callback(self, command: CallbackCommand, question: Editeur):
@@ -42,8 +39,33 @@ class EditeurPage(Frame):
 
         match command:
             case CallbackCommand.DELETE:
-                question.pack_forget()
+                question.destroy()
                 self.questions.pop(question_index)
+
+            case CallbackCommand.CHANGE_TYPE:
+              
+                nouveau_type = question.type_var.get()
+                donnees = {
+                    "titre": question.titre_var.get(),
+                    "points": question.points_var.get(),
+                    "obligatoire": question.obligatoire_var.get(),
+                    "choix": getattr(question, 'choix', None)
+                }
+
+                
+                question.destroy()
+
+              
+                if nouveau_type == "Choix Multiple":
+                    nouvelle_q = ChoixMultiple(self.scroll_container, page_callback=self._editeur_callback, **donnees)
+                else:
+                    nouvelle_q = ChoixUnique(self.scroll_container, page_callback=self._editeur_callback, **donnees)
+                
+           
+                nouvelle_q.type_var.set(nouveau_type)
+
+          
+                self.questions[question_index] = nouvelle_q
 
             case CallbackCommand.DUPLICATE:
                 raise NotImplementedError
@@ -59,17 +81,20 @@ class EditeurPage(Frame):
         self.update_questions_view()
 
     def update_questions_view(self):
+
         for each in self.questions:
             each.pack_forget()
+        
+        self.btn_ajouter.pack_forget()
+
+        for each in self.questions:
             each.pack(fill="x", pady=10)
 
-        self.btn_ajouter.pack_forget()
-        self.btn_ajouter.pack(pady=10)
+        self.btn_ajouter.pack(pady=20)
 
     def ajouter_question(self):
         self.questions.append(ChoixUnique(
             self.scroll_container,
             page_callback=self._editeur_callback,
         ))
-
         self.update_questions_view()

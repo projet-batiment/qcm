@@ -5,3 +5,5 @@ class CallbackCommand(Enum):
     MOVE_DOWN = auto()
     DELETE = auto()
     DUPLICATE = auto()
+    CHANGE_TYPE = auto()
+    
