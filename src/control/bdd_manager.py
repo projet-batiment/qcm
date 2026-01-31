@@ -4,9 +4,9 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from typing import List
 import logging
 
-from src.model.bdd_init import Base
-from src.model.qcm import Qcm
-from src.model.question import QuestionQCMultiples, QuestionLibre
+from model.bdd_init import Base
+from model.qcm import Qcm
+from model.question import QuestionQCMultiples, QuestionLibre
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

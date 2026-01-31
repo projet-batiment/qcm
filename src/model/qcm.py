@@ -1,7 +1,7 @@
 from typing import List, Optional, TYPE_CHECKING
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from src.model.bdd_init import Base
+from model.bdd_init import Base
 
 if TYPE_CHECKING:
     from src.model.question import Question

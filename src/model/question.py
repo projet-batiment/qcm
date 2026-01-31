@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.orderinglist import ordering_list
-from src.model.bdd_init import Base
+from model.bdd_init import Base
 
 
 class Question(Base):
