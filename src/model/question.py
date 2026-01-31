@@ -91,7 +91,7 @@ class QuestionQCMultiples(Question):
                 choix.est_correct = False
 
 
-class QuestionQCUnique(Question):
+class QuestionQCUnique(QuestionQCMultiples):
     __mapper_args__ = {"polymorphic_identity": "qcm_unique"}
 
     def __init__(
@@ -110,6 +110,23 @@ class QuestionQCUnique(Question):
         else:
             indices = []
         super().__init__(enonce, points, choix_rep, indices)
+
+    @property
+    def id_bonne_reponse(self) -> int:
+        """Retourne l'index de la bonne réponse unique."""
+        indices = super().id_bonne_reponse
+        if len(indices) == 1:
+            return indices[0]
+        return -1
+
+    @id_bonne_reponse.setter
+    def id_bonne_reponse(self, index_correct: int) -> None:
+        """Met à jour la bonne réponse unique en BDD."""
+        for i, choix in enumerate(self.choix_bdd):
+            if i == index_correct:
+                choix.est_correct = True
+            else:
+                choix.est_correct = False
 
 
 class QuestionLibre(Question):
