@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Any
 from model.question import (
     Question,
     QuestionLibre,
     QuestionQCMultiples,
     QuestionQCUnique,
 )
+from typing import Any
 
 
 class Reponse(ABC):
@@ -20,7 +20,7 @@ class Reponse(ABC):
     def verifier(self, proposition_utilisateur: Any) -> bool:
         """
         Vérifie la validité de la proposition utilisateur.
-        :param proposition_utilisateur: L'index (int) ou le texte (str) fourni par l'utilisateur.
+        proposition_utilisateur: L'index (int) ou le texte (str) fourni par l'utilisateur.
         """
         pass
 
