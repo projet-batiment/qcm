@@ -1,13 +1,18 @@
-  from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
-from src.model.bdd_init import Basefrom typing import Any
-from question import Question, QuestionLibre, QuestionQCMultiples, QuestionQCUnique
+from abc import ABC, abstractmethod
+from src.model.question import (
+    Question,
+    QuestionLibre,
+    QuestionQCMultiples,
+    QuestionQCUnique,
+)
+from typing import Any
 
 
 class Reponse(ABC):
     """
     Classe abstraite qui lie une logique de vérification à une Question donnée.
     """
+
     def __init__(self, question: Question):
         self.question = question
 

@@ -6,8 +6,7 @@ import logging
 
 from src.model.bdd_init import Base
 from src.model.qcm import Qcm
-from src.model.question import QuestionQCM, QuestionLibre
-from src.model.reponse import Reponse
+from src.model.question import QuestionQCMultiples, QuestionLibre
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,11 +15,13 @@ logger = logging.getLogger(__name__)
 class BddManager:
     def __init__(self):
         self.engine = create_engine(
-            "sqlite:///qcm.db", connect_args={"check_same_thread": False}
+            "sqlite:///qcm.db",
+            connect_args={"check_same_thread": False},
+            echo=False,  # Mettre à True pour voir les requêtes SQL
         )
         try:
             Base.metadata.create_all(self.engine)
-            logger.info("Tables vérifiées/créées avec succès.")
+            logger.info("Base de données initialisée.   ")
         except SQLAlchemyError as e:
             logger.critical(f"Impossible de créer les tables : {e}")
 
@@ -35,7 +36,9 @@ class BddManager:
             logger.info(f"QCM '{qcm_obj.titre}' sauvegardé avec succès.")
             return True
         except IntegrityError as e:
-            logger.error(f"Erreur d'intégrité lors de la sauvegarde : {e}")
+            logger.error(
+                f"Erreur d'intégrité lors de la sauvegarde (ex: id non-unique, à vérifier) : {e}"
+            )
             self.session.rollback()
             return False
         except SQLAlchemyError as e:
@@ -78,22 +81,36 @@ if __name__ == "__main__":
         os.remove("qcm.db")
 
     bdd = BddManager()
-    r1 = Reponse("4", True)
-    r2 = Reponse("2", False)
-    q1 = QuestionQCM("2 + 2 ?", 1, [r1, r2])
-    q_libre = QuestionLibre("Couleur du cheval blanc ?", 2, "Blanc")
-    mon_qcm = Qcm("Test Mixte", [q1, q_libre])
+
+    # test création QCM Multiple
+    q_multiple = QuestionQCMultiples(
+        enonce="Quels sont les chiffres pairs ?",
+        points=1,
+        choix_rep=["1", "2", "3", "4"],
+        id_bonne_reponse=[1, 3],
+    )
+
+    # test création QCM Libre
+    q_libre = QuestionLibre(
+        enonce="Quelle est la capitale de la France ?", points=2, rep_attendue="Paris"
+    )
+
+    # Creéation du qcm
+    mon_qcm = Qcm("Test Mixte", [q_multiple, q_libre])
     if bdd.save_qcm(mon_qcm):
         print("Sauvegarde OK")
+
     # save ok, mtn on teste la récupération
+    print("\n Lecture de la BDD :")
     qcms = bdd.get_qcms()
     for qcm in qcms:
         print(f"\nQCM : {qcm.titre}")
         for q in qcm.liste_questions:
             print(f" - [{q.type_question}] {q.enonce}")
-            if isinstance(q, QuestionQCM):
-                print(f"   (Choix : {[r.texte for r in q.choix_rep]})")
+            if isinstance(q, QuestionQCMultiples):
+                print(f"   Choix : {q.choix_rep}")
+                print(f"   Bonnes réponses (indices) : {q.id_bonne_reponse}")
             elif isinstance(q, QuestionLibre):
-                print(f"   (Attendu : {q.rep_attendue})")
+                print(f"   Réponse attendue : {q.rep_attendue}")
 
     bdd.close_bdd()

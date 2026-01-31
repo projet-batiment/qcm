@@ -1,45 +1,37 @@
-from typing import List, Optional
-<<<<<<< HEAD
+from typing import List, Optional, TYPE_CHECKING
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from src.model.bdd_init import Base
 
+if TYPE_CHECKING:
+    from src.model.question import Question
+
 
 class Qcm(Base):
-    __tablename__ = "qcm"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    titre = Column(String, nullable=False)
-    liste_questions = relationship(
-        "Question", back_populates="qcm", cascade="all, delete-orphan"
-    )
-
-    def __init__(self, titre: str, liste_questions: Optional[List] = None):
-=======
-from question import Question
-
-
-class Qcm:
     """
     Classe modèle représentant un questionnaire (conteneur de questions).
     Elle gère la collection de questions et le calcul des scores théoriques.
     """
 
+    __tablename__ = "qcm"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    titre = Column(String, nullable=False)
+    liste_questions = relationship(
+        "Question",
+        order_by="Question.id",
+        back_populates="qcm",
+        cascade="all, delete-orphan",
+    )
+
     def __init__(
-        self, titre: str, liste_questions: Optional[List[Question]] = None
+        self, titre: str, liste_questions: Optional[List["Question"]] = None
     ) -> None:
-        """
-        Initialise le QCM.
-        :param titre: Le titre du questionnaire.
-        :param liste_questions: Une liste optionnelle de questions déjà existantes.
-        """
->>>>>>> main
         self.titre = titre
-        if liste_questions is None:
-            self.liste_questions: List[Question] = []
-        else:
+        # SQLAlchemy gère la liste des questions.
+        if liste_questions:
             self.liste_questions = liste_questions
 
-    def ajouter_question(self, question: Question) -> None:
+    def ajouter_question(self, question: "Question") -> None:
         """Ajoute une question (QCM, Unique ou Libre) au questionnaire."""
         self.liste_questions.append(question)
 
@@ -48,7 +40,7 @@ class Qcm:
         if 0 <= index < len(self.liste_questions):
             self.liste_questions.pop(index)
 
-    def get_question(self, index: int) -> Optional[Question]:
+    def get_question(self, index: int) -> Optional["Question"]:
         """Retourne la question à l'index donné sans la supprimer."""
         if 0 <= index < len(self.liste_questions):
             return self.liste_questions[index]
