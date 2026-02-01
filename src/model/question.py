@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.orderinglist import ordering_list
-from src.model.bdd_init import Base
+from model.bdd_init import Base
 
 
 class Question(Base):
@@ -104,12 +104,12 @@ class QuestionQCUnique(QuestionQCMultiples):
         """
         :param id_bonne_reponse: Un ENTIER de l'indice correct
         """
+        super().__init__(enonce, points, choix_rep, id_bonne_reponse=None)
         # On transforme l'int unique en liste pour le stockage parent
         if id_bonne_reponse >= 0:
-            indices = [id_bonne_reponse]
+            self.id_bonne_reponse = id_bonne_reponse
         else:
-            indices = []
-        super().__init__(enonce, points, choix_rep, indices)
+            self.id_bonne_reponse = []
 
     @property
     def id_bonne_reponse(self) -> int:
