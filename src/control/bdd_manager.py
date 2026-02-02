@@ -6,16 +6,15 @@ import logging
 
 from model.bdd_init import Base
 from model.qcm import Qcm
-from model.question import QuestionQCMultiples, QuestionLibre
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class BddManager:
-    def __init__(self):
+    def __init__(self, db_filename="qcm.db"):
         self.engine = create_engine(
-            "sqlite:///qcm.db",
+            f"sqlite:///{db_filename}",
             connect_args={"check_same_thread": False},
             echo=False,  # Mettre à True pour voir les requêtes SQL
         )
@@ -70,47 +69,5 @@ class BddManager:
 
     def close_bdd(self) -> None:
         self.session.close()
+        self.engine.dispose()
         logger.info("Connexion BDD fermée.")
-
-
-# tester : python -m src.control.bdd_manager
-if __name__ == "__main__":
-    import os
-
-    if os.path.exists("qcm.db"):
-        os.remove("qcm.db")
-
-    bdd = BddManager()
-
-    # test création QCM Multiple
-    q_multiple = QuestionQCMultiples(
-        enonce="Quels sont les chiffres pairs ?",
-        points=1,
-        choix_rep=["1", "2", "3", "4"],
-        id_bonne_reponse=[1, 3],
-    )
-
-    # test création QCM Libre
-    q_libre = QuestionLibre(
-        enonce="Quelle est la capitale de la France ?", points=2, rep_attendue="Paris"
-    )
-
-    # Creéation du qcm
-    mon_qcm = Qcm("Test Mixte", [q_multiple, q_libre])
-    if bdd.save_qcm(mon_qcm):
-        print("Sauvegarde OK")
-
-    # save ok, mtn on teste la récupération
-    print("\n Lecture de la BDD :")
-    qcms = bdd.get_qcms()
-    for qcm in qcms:
-        print(f"\nQCM : {qcm.titre}")
-        for q in qcm.liste_questions:
-            print(f" - [{q.type_question}] {q.enonce}")
-            if isinstance(q, QuestionQCMultiples):
-                print(f"   Choix : {q.choix_rep}")
-                print(f"   Bonnes réponses (indices) : {q.id_bonne_reponse}")
-            elif isinstance(q, QuestionLibre):
-                print(f"   Réponse attendue : {q.rep_attendue}")
-
-    bdd.close_bdd()
