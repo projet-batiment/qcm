@@ -1,5 +1,7 @@
 from model.question import QuestionQCUnique, QuestionQCMultiples
 from model.reponse import ReponseQCUnique, ReponseQCMultiples
+import model.qcm  # noqa: F401
+# noqa: F401 : Afin que Ruff ne se plaigne pas de l'import non utilisé.
 
 
 def test_qcm_unique_verification():

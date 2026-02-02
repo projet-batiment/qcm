@@ -43,6 +43,7 @@ jobs:
       - name: Install Dependencies & Project
         run: |
           pip install pytest
+          pip install sqlalchemy
           # pip install -e . est aussi accéléré car les dépendances sont en cache
           pip install -e .
 
