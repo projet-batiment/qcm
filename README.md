@@ -1,6 +1,6 @@
 # Projet QCM  :
 
-Application graphique permettant de créer, éditer et lancer des questionnaires de différents types. Question à choix multiple, unique et libre. 
+Application graphique permettant de créer, éditer et lancer des questionnaires de différents types. Question à choix multiple, unique et libre.
 
 Ce projet a été réalisé dans le cadre du module de Développement Collaboratif (INSA Strasbourg).
 
