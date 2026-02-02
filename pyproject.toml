@@ -12,5 +12,11 @@ dependencies = [
     # Liste vide pour l'instant
 ]
 
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "N", "I"]
+
 [tool.setuptools.packages.find]
 where = ["src"]

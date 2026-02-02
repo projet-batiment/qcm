@@ -65,9 +65,7 @@ class QuestionQCMultiples(Question):
     @choix_rep.setter
     def choix_rep(self, ajout_de_choix: List[str]) -> None:
         """Met à jour la liste des choix de réponses en bdd."""
-        # On vide l'ancienne liste BDD
         self.choix_bdd = []
-        # Ajout objet en BDD pour chaque choix
         for choix in ajout_de_choix:
             self.choix_bdd.append(Choix(texte=choix, est_correct=False))
 
