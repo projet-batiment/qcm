@@ -11,8 +11,8 @@ def test_qcm_unique_verification():
     )
     verif = ReponseQCUnique(q)
 
-    assert verif.verifier(0) is True, "0 est l'index de la bonne réponse"
-    assert verif.verifier(1) is False, "1 est une mauvaise réponse"
+    assert verif.verifier(0) is True
+    assert verif.verifier(1) is False
 
 
 def test_qcm_multiple_verification():
