@@ -1,8 +1,7 @@
-from typing import List
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.orderinglist import ordering_list
 from model.bdd_init import Base
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.ext.orderinglist import ordering_list
+from sqlalchemy.orm import relationship
 
 
 class Question(Base):
@@ -28,6 +27,8 @@ class Question(Base):
 class QuestionQCMultiples(Question):
     __tablename__ = "questions_qcm"
     id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
+
+    # La relation One-to-Many vers la table Choix
     choix_bdd = relationship(
         "Choix",
         order_by="Choix.id",
@@ -42,20 +43,19 @@ class QuestionQCMultiples(Question):
         self,
         enonce: str,
         points: int,
-        choix_rep: List[str] = None,
-        id_bonne_reponse: List[int] = None,
+        choix_rep: list[str] | None = None,
+        id_bonne_reponse: list[int] | None = None,
     ):
         super().__init__(enonce, points)
-        # ici on appel une méthode "choix_rep" qui va créer les objets BDD.
+
         if choix_rep:
             self.choix_rep = choix_rep
-        # ici idem, on indique les bonnes réponses en BDD.
+
         if id_bonne_reponse:
             self.id_bonne_reponse = id_bonne_reponse
 
-    # Création des fonctions pour gérer les choix de réponses via des listes simples
     @property
-    def choix_rep(self) -> List[str]:
+    def choix_rep(self) -> list[str]:
         """Retourne la liste des textes des choix de réponses."""
         textes = []
         for rep in self.choix_bdd:
@@ -63,15 +63,14 @@ class QuestionQCMultiples(Question):
         return textes
 
     @choix_rep.setter
-    def choix_rep(self, ajout_de_choix: List[str]) -> None:
+    def choix_rep(self, ajout_de_choix: list[str]) -> None:
         """Met à jour la liste des choix de réponses en bdd."""
         self.choix_bdd = []
         for choix in ajout_de_choix:
             self.choix_bdd.append(Choix(texte=choix, est_correct=False))
 
-    # Idem pour les bonnes réponses, via les listes
     @property
-    def id_bonne_reponse(self) -> List[int]:
+    def id_bonne_reponse(self) -> list[int]:
         """Trouve les indices des choix marqués 'True' en BDD"""
         indices = []
         for index, choix in enumerate(self.choix_bdd):
@@ -80,7 +79,7 @@ class QuestionQCMultiples(Question):
         return indices
 
     @id_bonne_reponse.setter
-    def id_bonne_reponse(self, liste_indices: List[int]) -> None:
+    def id_bonne_reponse(self, liste_indices: list[int]) -> None:
         """Met à jour les bonnes réponses en BDD via une liste"""
         for index, choix in enumerate(self.choix_bdd):
             if index in liste_indices:
@@ -96,14 +95,14 @@ class QuestionQCUnique(QuestionQCMultiples):
         self,
         enonce: str,
         points: int,
-        choix_rep: List[str] = None,
+        choix_rep: list[str] | None = None,
         id_bonne_reponse: int = -1,
     ):
         """
         :param id_bonne_reponse: Un ENTIER de l'indice correct
         """
         super().__init__(enonce, points, choix_rep, id_bonne_reponse=None)
-        # On transforme l'int unique en liste pour le stockage parent
+
         if id_bonne_reponse >= 0:
             self.id_bonne_reponse = id_bonne_reponse
         else:
@@ -118,8 +117,14 @@ class QuestionQCUnique(QuestionQCMultiples):
         return -1
 
     @id_bonne_reponse.setter
-    def id_bonne_reponse(self, index_correct: int) -> None:
+    def id_bonne_reponse(self, index_correct: int | list[int]) -> None:
         """Met à jour la bonne réponse unique en BDD."""
+        if isinstance(index_correct, list):
+            if not index_correct:
+                for choix in self.choix_bdd:
+                    choix.est_correct = False
+            return
+
         for i, choix in enumerate(self.choix_bdd):
             if i == index_correct:
                 choix.est_correct = True
@@ -138,13 +143,13 @@ class QuestionLibre(Question):
         self.rep_attendue = rep_attendue
 
 
-# Table pour stocker les choix (car SQL ne gère pas les listes...)
 class Choix(Base):
     __tablename__ = "choix"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     texte = Column(String, nullable=False)
     est_correct = Column(Boolean, default=False)
+
     question_id = Column(Integer, ForeignKey("questions_qcm.id"))
     question = relationship("QuestionQCMultiples", back_populates="choix_bdd")
 
