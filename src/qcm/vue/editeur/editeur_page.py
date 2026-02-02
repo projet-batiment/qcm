@@ -1,10 +1,11 @@
-from ttkbootstrap import Frame, Button, Entry, StringVar
-from ttkbootstrap.scrolled import ScrolledFrame
 import logging
-from vue.editeur.editeur_callback_type import CallbackCommand
-from vue.editeur.choix_unique import ChoixUnique
+
+from ttkbootstrap import Button, Entry, Frame, StringVar
+from ttkbootstrap.scrolled import ScrolledFrame
 from vue.editeur.choix_multiple import ChoixMultiple
+from vue.editeur.choix_unique import ChoixUnique
 from vue.editeur.editeur import Editeur
+from vue.editeur.editeur_callback_type import CallbackCommand
 
 
 class EditeurPage(Frame):

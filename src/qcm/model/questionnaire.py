@@ -1,7 +1,8 @@
-from typing import List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING
+
+from model.bdd_init import Base
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
-from model.bdd_init import Base
 
 if TYPE_CHECKING:
     from model.question import Question
@@ -16,6 +17,7 @@ class Qcm(Base):
     __tablename__ = "qcm"
     id = Column(Integer, primary_key=True, autoincrement=True)
     titre = Column(String, nullable=False)
+
     liste_questions = relationship(
         "Question",
         order_by="Question.id",
@@ -24,10 +26,9 @@ class Qcm(Base):
     )
 
     def __init__(
-        self, titre: str, liste_questions: Optional[List["Question"]] = None
+        self, titre: str, liste_questions: list["Question"] | None = None
     ) -> None:
         self.titre = titre
-        # SQLAlchemy gère la liste des questions.
         if liste_questions:
             self.liste_questions = liste_questions
 
@@ -40,7 +41,7 @@ class Qcm(Base):
         if 0 <= index < len(self.liste_questions):
             self.liste_questions.pop(index)
 
-    def get_question(self, index: int) -> Optional["Question"]:
+    def get_question(self, index: int) -> "Question" | None:
         """Retourne la question à l'index donné sans la supprimer."""
         if 0 <= index < len(self.liste_questions):
             return self.liste_questions[index]

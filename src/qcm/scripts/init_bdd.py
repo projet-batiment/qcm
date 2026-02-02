@@ -2,7 +2,7 @@ import os
 
 from control.bdd_manager import BddManager
 from model.qcm import Qcm
-from model.question import QuestionQCMultiples, QuestionLibre
+from model.question import QuestionLibre, QuestionQCMultiples
 
 
 def init_db():

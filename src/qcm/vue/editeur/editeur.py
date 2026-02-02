@@ -1,17 +1,17 @@
+from tkinter import BOTTOM, LEFT, RIGHT, TOP
+
 from ttkbootstrap import (
-    Frame,
-    Entry,
-    StringVar,
     BooleanVar,
+    Button,
     Checkbutton,
-    Spinbox,
+    Combobox,
+    Entry,
+    Frame,
     IntVar,
     Label,
-    Button,
-    Combobox,
+    Spinbox,
+    StringVar,
 )
-from tkinter import TOP, BOTTOM, LEFT, RIGHT
-
 from vue.editeur.editeur_callback_type import CallbackCommand
 
 

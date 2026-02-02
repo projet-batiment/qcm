@@ -1,18 +1,18 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-from typing import List
 import logging
 
-from model.bdd_init import Base
-from model.qcm import Qcm
+from sqlalchemy import create_engine
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.orm import sessionmaker
+
+from qcm.model.bdd_init import Base
+from qcm.model.questionnaire import Qcm
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 class BddManager:
-    def __init__(self, db_filename="qcm.db"):
+    def __init__(self, db_filename: str = "qcm.db"):
         self.engine = create_engine(
             f"sqlite:///{db_filename}",
             connect_args={"check_same_thread": False},
@@ -20,7 +20,7 @@ class BddManager:
         )
         try:
             Base.metadata.create_all(self.engine)
-            logger.info("Base de données initialisée.   ")
+            logger.info("Base de données initialisée.")
         except SQLAlchemyError as e:
             logger.critical(f"Impossible de créer les tables : {e}")
 
@@ -36,7 +36,8 @@ class BddManager:
             return True
         except IntegrityError as e:
             logger.error(
-                f"Erreur d'intégrité lors de la sauvegarde (ex: id non-unique, à vérifier) : {e}"
+                f"Erreur d'intégrité lors de la sauvegarde "
+                f"(ex: id non-unique, à vérifier) : {e}"
             )
             self.session.rollback()
             return False
@@ -49,7 +50,7 @@ class BddManager:
             self.session.rollback()
             return False
 
-    def get_qcms(self) -> List[Qcm]:
+    def get_qcms(self) -> list[Qcm]:
         try:
             return self.session.query(Qcm).all()
         except SQLAlchemyError as e:
