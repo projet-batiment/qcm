@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from ttkbootstrap import Window
+
 from vue.editeur.editeur_page import EditeurPage
 
 

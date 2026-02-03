@@ -1,8 +1,9 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-from typing import List
 import logging
+from typing import List
+
+from sqlalchemy import create_engine
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.orm import sessionmaker
 
 from model.bdd_init import Base
 from model.qcm import Qcm
@@ -35,9 +36,7 @@ class BddManager:
             logger.info(f"QCM '{qcm_obj.titre}' sauvegardé avec succès.")
             return True
         except IntegrityError as e:
-            logger.error(
-                f"Erreur d'intégrité lors de la sauvegarde (ex: id non-unique, à vérifier) : {e}"
-            )
+            logger.error(f"Erreur d'intégrité lors de la sauvegarde : {e}")
             self.session.rollback()
             return False
         except SQLAlchemyError as e:
