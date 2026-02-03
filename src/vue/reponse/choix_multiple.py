@@ -1,0 +1,43 @@
+from ttkbootstrap import Frame, Entry, Radiobutton, IntVar, Button, StringVar, Label, BooleanVar, Checkbutton
+from tkinter import LEFT, TOP, RIGHT, BOTTOM
+
+from model.question import QuestionQCMultiples
+from .reponse_ui import ReponseUI
+
+from logging import debug
+
+class ReponseQCMultiplesUI(ReponseUI):
+    def __init__(self, parent, question: QuestionQCMultiples, *args, **kwargs):
+        super().__init__(parent, question, *args, **kwargs)
+
+        self.question = question
+
+        self.container = Frame(self.milieu)
+        self.container.pack(fill="x", expand=True)
+
+        self.choix_ui = []
+        self.vars_etat = []
+
+        self.checked = set()
+
+        self.update()
+
+    def update(self):
+        for each_old_ui in self.choix_ui:
+            each_old_ui.pack_forget()
+
+        self.choix_ui = []
+        self.vars_etat = []
+
+        for i, each_choix in enumerate(self.question.choix_rep):
+            each_frame = Frame(self.container)
+            each_frame.pack(side=TOP, fill="x", expand=True)
+
+            etat_var = BooleanVar(value=False)
+            self.vars_etat.append(etat_var)
+            each_check = Checkbutton(each_frame, variable=etat_var)
+            each_check.pack(side=LEFT)
+            each_label = Label(each_frame, text=each_choix)
+            each_label.pack(side=LEFT)
+
+            self.choix_ui.append(each_frame)

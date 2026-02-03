@@ -7,6 +7,7 @@ from model.qcm import Qcm
 from model import question
 
 from .choix_unique import ReponseQCUniqueUI
+from .choix_multiple import ReponseQCMultiplesUI
 
 class ReponsePage(Frame):
     def __init__(self, parent, qcm: Qcm):
@@ -45,6 +46,9 @@ class ReponsePage(Frame):
             match each_question:
                 case question.QuestionQCUnique():
                     each_reponse = ReponseQCUniqueUI(self.scroll_container, each_question)
+
+                case question.QuestionQCMultiples():
+                    each_reponse = ReponseQCMultiplesUI(self.scroll_container, each_question)
 
                 case _:
                     raise NotImplementedError
