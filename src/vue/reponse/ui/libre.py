@@ -1,8 +1,9 @@
-from ttkbootstrap import Frame, Entry, Radiobutton, IntVar, Button, StringVar, Label
-from tkinter import LEFT, TOP, RIGHT, BOTTOM
+from ttkbootstrap import Entry, Frame, StringVar
 
 from model.question import QuestionLibre
+
 from .ui import ReponseUI
+
 
 class ReponseLibreUI(ReponseUI):
     def __init__(self, parent, question: QuestionLibre, *args, **kwargs):

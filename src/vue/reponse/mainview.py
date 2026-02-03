@@ -1,12 +1,11 @@
-from ttkbootstrap import Frame, Button, Label, StringVar
+from ttkbootstrap import Button, Frame, Label
 from ttkbootstrap.scrolled import ScrolledFrame
 
-from logging import warning
-
-from model.qcm import Qcm
 from model import question
+from model.qcm import Qcm
 
-from .ui import ReponseQCUniqueUI, ReponseQCMultiplesUI, ReponseLibreUI
+from .ui import ReponseLibreUI, ReponseQCMultiplesUI, ReponseQCUniqueUI
+
 
 class MainView(Frame):
     def __init__(self, parent, qcm: Qcm):
@@ -26,10 +25,7 @@ class MainView(Frame):
         self.reponse_uis = []
 
         self.btn_valider = Button(
-            self.scroll_container,
-            text="✅ Envoyer",
-            command=self.valider,
-            style="info"
+            self.scroll_container, text="✅ Envoyer", command=self.valider, style="info"
         )
 
         self.update_view()
@@ -44,10 +40,14 @@ class MainView(Frame):
         for each_question in self.qcm.liste_questions:
             match each_question:
                 case question.QuestionQCUnique():
-                    each_reponse = ReponseQCUniqueUI(self.scroll_container, each_question)
+                    each_reponse = ReponseQCUniqueUI(
+                        self.scroll_container, each_question
+                    )
 
                 case question.QuestionQCMultiples():
-                    each_reponse = ReponseQCMultiplesUI(self.scroll_container, each_question)
+                    each_reponse = ReponseQCMultiplesUI(
+                        self.scroll_container, each_question
+                    )
 
                 case question.QuestionLibre():
                     each_reponse = ReponseLibreUI(self.scroll_container, each_question)

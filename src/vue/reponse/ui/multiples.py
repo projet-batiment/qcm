@@ -1,10 +1,11 @@
-from ttkbootstrap import Frame, Entry, Radiobutton, IntVar, Button, StringVar, Label, BooleanVar, Checkbutton
-from tkinter import LEFT, TOP, RIGHT, BOTTOM
+from tkinter import LEFT, TOP
+
+from ttkbootstrap import BooleanVar, Checkbutton, Frame, Label
 
 from model.question import QuestionQCMultiples
+
 from .ui import ReponseUI
 
-from logging import debug
 
 class ReponseQCMultiplesUI(ReponseUI):
     def __init__(self, parent, question: QuestionQCMultiples, *args, **kwargs):

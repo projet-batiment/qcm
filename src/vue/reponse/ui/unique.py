@@ -1,8 +1,11 @@
-from ttkbootstrap import Frame, Entry, Radiobutton, IntVar, Button, StringVar, Label
-from tkinter import LEFT, TOP, RIGHT, BOTTOM
+from tkinter import LEFT, TOP
+
+from ttkbootstrap import Frame, IntVar, Label, Radiobutton
 
 from model.question import QuestionQCUnique
+
 from .ui import ReponseUI
+
 
 class ReponseQCUniqueUI(ReponseUI):
     def __init__(self, parent, question: QuestionQCUnique, *args, **kwargs):

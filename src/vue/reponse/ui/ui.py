@@ -1,7 +1,9 @@
-from ttkbootstrap import Frame, Entry, StringVar, BooleanVar, Checkbutton, Spinbox, IntVar, Label, Button, Combobox
-from tkinter import TOP, BOTTOM, LEFT, RIGHT
+from tkinter import BOTTOM, LEFT, RIGHT, TOP
+
+from ttkbootstrap import Frame, Label
 
 from model.question import Question
+
 
 class ReponseUI(Frame):
     def __init__(self, parent, question: Question):
