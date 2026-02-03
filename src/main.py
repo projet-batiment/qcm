@@ -2,7 +2,7 @@
 from ttkbootstrap import Window
 
 from vue.editeur.editeur_page import EditeurPage
-from vue.reponse.reponse_page import ReponsePage
+from vue import reponse
 
 from model.qcm import Qcm
 from model.question import QuestionQCUnique, QuestionQCMultiples, QuestionLibre
@@ -43,7 +43,7 @@ class Main:
         )
 
         # EditeurPage(self.window).pack(fill="y", expand=True)
-        ReponsePage(self.window, qcm).pack(fill="y", expand=True)
+        reponse.MainView(self.window, qcm).pack(fill="y", expand=True)
 
     def main(self):
         self.window.mainloop()

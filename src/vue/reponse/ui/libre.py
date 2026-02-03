@@ -2,7 +2,7 @@ from ttkbootstrap import Frame, Entry, Radiobutton, IntVar, Button, StringVar, L
 from tkinter import LEFT, TOP, RIGHT, BOTTOM
 
 from model.question import QuestionLibre
-from .reponse_ui import ReponseUI
+from .ui import ReponseUI
 
 class ReponseLibreUI(ReponseUI):
     def __init__(self, parent, question: QuestionLibre, *args, **kwargs):

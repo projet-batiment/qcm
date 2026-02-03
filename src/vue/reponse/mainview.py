@@ -6,11 +6,9 @@ from logging import warning
 from model.qcm import Qcm
 from model import question
 
-from .choix_unique import ReponseQCUniqueUI
-from .choix_multiple import ReponseQCMultiplesUI
-from .choix_libre import ReponseLibreUI
+from .ui import ReponseQCUniqueUI, ReponseQCMultiplesUI, ReponseLibreUI
 
-class ReponsePage(Frame):
+class MainView(Frame):
     def __init__(self, parent, qcm: Qcm):
         super().__init__(parent, width=800)
         self.pack_propagate(False)

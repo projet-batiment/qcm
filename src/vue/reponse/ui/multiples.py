@@ -2,7 +2,7 @@ from ttkbootstrap import Frame, Entry, Radiobutton, IntVar, Button, StringVar, L
 from tkinter import LEFT, TOP, RIGHT, BOTTOM
 
 from model.question import QuestionQCMultiples
-from .reponse_ui import ReponseUI
+from .ui import ReponseUI
 
 from logging import debug
 
