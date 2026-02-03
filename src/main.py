@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from ttkbootstrap import Window
 
-from vue.editeur.editeur_page import EditeurPage
+from vue import question
 from vue import reponse
 
 from model.qcm import Qcm
@@ -42,9 +42,8 @@ class Main:
             )
         )
 
-        # EditeurPage(self.window).pack(fill="y", expand=True)
         reponse.MainView(self.window, qcm).pack(fill="y", expand=True)
-        # ReponsePage(self.window, qcm).pack(fill="y", expand=True)
+        question.MainView(self.window).pack(fill="y", expand=True)
 
     def main(self):
         self.window.mainloop()

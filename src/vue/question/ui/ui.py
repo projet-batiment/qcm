@@ -1,5 +1,4 @@
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
-
 from ttkbootstrap import (
     BooleanVar,
     Button,
@@ -13,10 +12,9 @@ from ttkbootstrap import (
     StringVar,
 )
 
-from vue.editeur.editeur_callback_type import CallbackCommand
+from ..callback_type import CallbackCommand
 
-
-class Editeur(Frame):
+class QuestionUI(Frame):
     def __init__(
         self,
         parent,
