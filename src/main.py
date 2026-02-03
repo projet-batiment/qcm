@@ -5,7 +5,10 @@ from vue.editeur.editeur_page import EditeurPage
 from vue.reponse.reponse_page import ReponsePage
 
 from model.qcm import Qcm
-from model.question import QuestionQCUnique
+from model.question import QuestionQCUnique, QuestionQCMultiples, QuestionLibre
+
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Main:
@@ -21,6 +24,21 @@ class Main:
                 points=3,
                 choix_rep=["hello", "world"],
                 id_bonne_reponse=0
+            )
+        )
+        qcm.ajouter_question(
+            QuestionQCMultiples(
+                enonce="Ceci est un test",
+                points=3,
+                choix_rep=["hello", "world", "Faux"],
+                id_bonne_reponse=[0, 1]
+            )
+        )
+        qcm.ajouter_question(
+            QuestionLibre(
+                enonce="Ceci est un test",
+                points=1,
+                rep_attendue="bien"
             )
         )
 
