@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 from ttkbootstrap import Window
 
-from vue import question
-from vue import reponse
+from control.controller import Control
 
 from model.qcm import Qcm
 from model.question import QuestionQCUnique, QuestionQCMultiples, QuestionLibre
@@ -10,6 +9,7 @@ from model.question import QuestionQCUnique, QuestionQCMultiples, QuestionLibre
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
+from vue import splashscreen
 
 class Main:
     def __init__(self):
@@ -42,8 +42,7 @@ class Main:
             )
         )
 
-        reponse.MainView(self.window, qcm).pack(fill="y", expand=True)
-        question.MainView(self.window).pack(fill="y", expand=True)
+        controller = Control(self.window)
 
     def main(self):
         self.window.mainloop()
