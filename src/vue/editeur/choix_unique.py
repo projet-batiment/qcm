@@ -1,5 +1,6 @@
-from ttkbootstrap import Frame, Entry, Radiobutton, IntVar, Button, StringVar
-from tkinter import LEFT, TOP, RIGHT, BOTTOM
+from tkinter import BOTTOM, LEFT, RIGHT, TOP
+
+from ttkbootstrap import Button, Entry, Frame, IntVar, Radiobutton, StringVar
 
 from .editeur import Editeur
 

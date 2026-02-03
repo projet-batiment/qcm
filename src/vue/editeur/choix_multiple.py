@@ -1,5 +1,7 @@
-from ttkbootstrap import Frame, Entry, Checkbutton, BooleanVar, Button, StringVar
-from tkinter import LEFT, TOP, RIGHT, BOTTOM
+from tkinter import BOTTOM, LEFT, RIGHT, TOP
+
+from ttkbootstrap import BooleanVar, Button, Checkbutton, Entry, Frame, StringVar
+
 from .editeur import Editeur
 
 

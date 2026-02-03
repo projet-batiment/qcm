@@ -1,7 +1,9 @@
 from typing import List
-from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
-from sqlalchemy.orm import relationship
+
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.orderinglist import ordering_list
+from sqlalchemy.orm import relationship
+
 from model.bdd_init import Base
 
 
