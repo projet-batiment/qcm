@@ -44,6 +44,7 @@ class Main:
 
         # EditeurPage(self.window).pack(fill="y", expand=True)
         reponse.MainView(self.window, qcm).pack(fill="y", expand=True)
+        # ReponsePage(self.window, qcm).pack(fill="y", expand=True)
 
     def main(self):
         self.window.mainloop()
