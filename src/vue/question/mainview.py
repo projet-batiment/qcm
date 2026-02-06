@@ -3,13 +3,10 @@ import logging
 from ttkbootstrap import Button, Entry, Frame, StringVar
 from ttkbootstrap.scrolled import ScrolledFrame
 
-from vue.editeur.choix_multiple import ChoixMultiple
-from vue.editeur.choix_unique import ChoixUnique
-from vue.editeur.editeur import Editeur
-from vue.editeur.editeur_callback_type import CallbackCommand
+from .ui import QuestionUI, QuestionQCMultiplesUI, QuestionQCUniqueUI
+from .callback_type import CallbackCommand
 
-
-class EditeurPage(Frame):
+class MainView(Frame):
     def __init__(self, parent):
         super().__init__(parent, width=800)
         self.pack_propagate(False)
@@ -33,7 +30,7 @@ class EditeurPage(Frame):
 
         self.ajouter_question()
 
-    def _editeur_callback(self, command: CallbackCommand, question: Editeur):
+    def _editeur_callback(self, command: CallbackCommand, question: QuestionUI):
         try:
             question_index = self.questions.index(question)
         except ValueError as e:
@@ -57,13 +54,13 @@ class EditeurPage(Frame):
                 question.destroy()
 
                 if nouveau_type == "Choix Multiple":
-                    nouvelle_q = ChoixMultiple(
+                    nouvelle_q = QuestionQCMultiplesUI(
                         self.scroll_container,
                         page_callback=self._editeur_callback,
                         **donnees,
                     )
                 else:
-                    nouvelle_q = ChoixUnique(
+                    nouvelle_q = QuestionQCUniqueUI(
                         self.scroll_container,
                         page_callback=self._editeur_callback,
                         **donnees,
@@ -103,7 +100,7 @@ class EditeurPage(Frame):
 
     def ajouter_question(self):
         self.questions.append(
-            ChoixUnique(
+            QuestionQCUniqueUI(
                 self.scroll_container,
                 page_callback=self._editeur_callback,
             )

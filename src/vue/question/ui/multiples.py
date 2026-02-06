@@ -1,11 +1,9 @@
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
-
 from ttkbootstrap import BooleanVar, Button, Checkbutton, Entry, Frame, StringVar
 
-from .editeur import Editeur
+from .ui import QuestionUI
 
-
-class ChoixMultiple(Editeur):
+class QuestionQCMultiplesUI(QuestionUI):
     def __init__(self, parent, page_callback, choix=None, *args, **kwargs):
         super().__init__(parent, page_callback=page_callback, *args, **kwargs)
 

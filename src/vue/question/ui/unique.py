@@ -1,11 +1,9 @@
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
-
 from ttkbootstrap import Button, Entry, Frame, IntVar, Radiobutton, StringVar
 
-from .editeur import Editeur
+from .ui import QuestionUI
 
-
-class ChoixUnique(Editeur):
+class QuestionQCUniqueUI(QuestionUI):
     def __init__(self, parent, choix=None, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
 
