@@ -2,7 +2,9 @@ from tkinter import Frame
 from logging import info
 
 from control import AppState
-from vue import splashscreen, MenuBar
+from vue import splashscreen, question, MenuBar
+
+from model.qcm import Qcm
 
 class Control:
     def __init__(self, window):
@@ -10,6 +12,7 @@ class Control:
 
         self.states = {
             AppState.SPLASH_SCREEN: splashscreen.MainView(window),
+            AppState.EDIT: question.MainView(window),
         }
 
         window.config(menu=MenuBar(window, self))
@@ -28,7 +31,9 @@ class Control:
         self.current_state.pack(fill="both", expand=True)
 
     def new_file(self):
-        info("nouveau qcm")
+        self.set_appstate(AppState.EDIT)
+
+        self.states[AppState.EDIT].set_qcm_new()
 
     def open_file(self):
         info("ouvrir qcm")

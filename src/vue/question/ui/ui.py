@@ -12,6 +12,9 @@ from ttkbootstrap import (
     StringVar,
 )
 
+from abc import abstractmethod
+
+from model.question import Question
 from ..callback_type import CallbackCommand
 
 class QuestionUI(Frame):
@@ -19,20 +22,20 @@ class QuestionUI(Frame):
         self,
         parent,
         page_callback,
-        titre="Énoncé de la question",
-        obligatoire=True,
-        points=1,
+        question: Question,
     ):
         super().__init__(parent, width=600, borderwidth=2, relief="solid")
 
+        self.question = question
+
         self.haut = Frame(self)
         self.haut.pack(side=TOP, fill="x", expand=True, pady=5)
-        self.titre_var = StringVar(value=titre)
-        self.type_var = StringVar(value="Choix Unique")
-        self.points_var = IntVar(value=points)
+
+        self.titre_var = StringVar(value=question.enonce)
         self.titre_entry = Entry(self.haut, textvariable=self.titre_var, width=40)
         self.titre_entry.pack(side=LEFT, padx=5)
 
+        self.type_var = StringVar(value="Choix Unique")
         self.type_selector = Combobox(
             self.haut,
             textvariable=self.type_var,
@@ -46,6 +49,7 @@ class QuestionUI(Frame):
             lambda e: page_callback(CallbackCommand.CHANGE_TYPE, self),
         )
 
+        self.points_var = IntVar(value=question.points)
         self.points_entry = Spinbox(
             self.haut, textvariable=self.points_var, from_=0, to=100, width=4
         )
@@ -57,7 +61,7 @@ class QuestionUI(Frame):
         self.bas = Frame(self)
         self.bas.pack(side=BOTTOM, fill="x", expand=True, pady=5)
 
-        self.obligatoire_var = BooleanVar(value=obligatoire)
+        self.obligatoire_var = BooleanVar(value=True)
         obligatoire_ui = Checkbutton(
             self.bas, text="Requis", variable=self.obligatoire_var
         )
@@ -98,3 +102,14 @@ class QuestionUI(Frame):
 
     def duplicate(self):
         raise NotImplementedError
+
+    @abstractmethod
+    def _read_question(self):
+        pass
+
+    def read_question(self, question):
+        self.question = question
+
+    @abstractmethod
+    def write_question(self):
+        pass
