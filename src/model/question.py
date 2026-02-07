@@ -1,8 +1,8 @@
 from typing import List
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
-from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import relationship
 
 from model.bdd_init import Base
@@ -43,7 +43,7 @@ class QuestionQCMultiples(Question):
     choix_rep = association_proxy(
         "choix_bdd",
         "texte",
-        creator=lambda texte: Choix(texte=texte, est_correct=False)
+        creator=lambda texte: Choix(texte=texte, est_correct=False),
     )
 
     __mapper_args__ = {"polymorphic_identity": "qcm_multiple"}
