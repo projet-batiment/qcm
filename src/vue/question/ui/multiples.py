@@ -6,6 +6,10 @@ from model.question import QuestionQCMultiples
 from .ui import QuestionUI
 
 class QuestionQCMultiplesUI(QuestionUI):
+    @staticmethod
+    def question_type():
+        return "Choix multiples"
+
     def __init__(self, parent, page_callback, question: QuestionQCMultiples, *args, **kwargs):
         super().__init__(parent, page_callback=page_callback, question=question, *args, **kwargs)
 

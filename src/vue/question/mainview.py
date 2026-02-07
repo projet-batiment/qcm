@@ -32,47 +32,34 @@ class MainView(Frame):
             style="info",
         )
 
-        self.set_qcm_new()
-
-    def _editeur_callback(self, command: CallbackCommand, question: QuestionUI):
+    def _editeur_callback(self, command: CallbackCommand, question_ui: QuestionUI):
         try:
-            question_index = self.qcm.liste_questions.index(question)
-        except ValueError as e:
-            logging.error("question not found in the list")
-            raise e
+            question_index = self.questions_ui.index(question_ui)
+        except ValueError:
+            raise ValueError("question not found in the list")
 
         match command:
             case CallbackCommand.DELETE:
-                question.destroy()
                 self.qcm.liste_questions.pop(question_index)
 
             case CallbackCommand.CHANGE_TYPE:
-                nouveau_type = question.type_var.get()
-                donnees = {
-                    "titre": question.titre_var.get(),
-                    "points": question.points_var.get(),
-                    "obligatoire": question.obligatoire_var.get(),
-                    "choix": getattr(question, "choix", None),
-                }
+                match question_ui.type_var.get():
+                    case "Question libre":
+                        question_class = QuestionLibre
 
-                question.destroy()
+                    case "Choix multiples":
+                        question_class = QuestionQCMultiples
 
-                if nouveau_type == "Choix Multiple":
-                    nouvelle_q = QuestionQCMultiplesUI(
-                        self.scroll_container,
-                        page_callback=self._editeur_callback,
-                        **donnees,
-                    )
-                else:
-                    nouvelle_q = QuestionQCUniqueUI(
-                        self.scroll_container,
-                        page_callback=self._editeur_callback,
-                        **donnees,
-                    )
+                    case "Choix unique":
+                        question_class = QuestionQCUnique
 
-                nouvelle_q.type_var.set(nouveau_type)
+                question = question_class(
+                    question_ui.question.enonce,
+                    question_ui.question.points
+                )
 
-                self.qcm.liste_questions[question_index] = nouvelle_q
+                self.__open_question(question)
+                self.qcm.liste_questions[question_index] = question
 
             case CallbackCommand.DUPLICATE:
                 raise NotImplementedError
@@ -98,6 +85,7 @@ class MainView(Frame):
             question_ui.pack_forget()
         self.btn_ajouter.pack_forget()
 
+        self.questions_ui = []
         for question in self.qcm.liste_questions:
             self.__open_question(question)
         self.btn_ajouter.pack(pady=20)

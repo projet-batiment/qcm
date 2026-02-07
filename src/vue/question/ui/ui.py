@@ -18,6 +18,11 @@ from model.question import Question
 from ..callback_type import CallbackCommand
 
 class QuestionUI(Frame):
+    @staticmethod
+    @abstractmethod
+    def question_type():
+        pass
+
     def __init__(
         self,
         parent,
@@ -35,11 +40,11 @@ class QuestionUI(Frame):
         self.titre_entry = Entry(self.haut, textvariable=self.titre_var, width=40)
         self.titre_entry.pack(side=LEFT, padx=5)
 
-        self.type_var = StringVar(value="Choix Unique")
+        self.type_var = StringVar(value=self.question_type())
         self.type_selector = Combobox(
             self.haut,
             textvariable=self.type_var,
-            values=["Choix Unique", "Choix Multiple"],
+            values=["Question libre", "Choix multiples", "Choix unique"],
             state="readonly",
             width=15,
         )
