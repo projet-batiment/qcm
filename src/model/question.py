@@ -2,6 +2,7 @@ from typing import List
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.orderinglist import ordering_list
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relationship
 
 from model.bdd_init import Base
@@ -38,6 +39,13 @@ class QuestionQCMultiples(Question):
         cascade="all, delete-orphan",
     )
 
+    # permet l'édition de la liste sans devoir la réassigner complètement
+    choix_rep = association_proxy(
+        "choix_bdd",
+        "texte",
+        creator=lambda texte: Choix(texte=texte, est_correct=False)
+    )
+
     __mapper_args__ = {"polymorphic_identity": "qcm_multiple"}
 
     def __init__(
@@ -54,22 +62,6 @@ class QuestionQCMultiples(Question):
         # ici idem, on indique les bonnes réponses en BDD.
         if id_bonne_reponse:
             self.id_bonne_reponse = id_bonne_reponse
-
-    # Création des fonctions pour gérer les choix de réponses via des listes simples
-    @property
-    def choix_rep(self) -> List[str]:
-        """Retourne la liste des textes des choix de réponses."""
-        textes = []
-        for rep in self.choix_bdd:
-            textes.append(rep.texte)
-        return textes
-
-    @choix_rep.setter
-    def choix_rep(self, ajout_de_choix: List[str]) -> None:
-        """Met à jour la liste des choix de réponses en bdd."""
-        self.choix_bdd = []
-        for choix in ajout_de_choix:
-            self.choix_bdd.append(Choix(texte=choix, est_correct=False))
 
     # Idem pour les bonnes réponses, via les listes
     @property
