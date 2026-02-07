@@ -1,24 +1,27 @@
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
 from ttkbootstrap import Button, Entry, Frame, IntVar, Radiobutton, StringVar
 
+from model.question import QuestionQCUnique
+
 from .ui import QuestionUI
 
 class QuestionQCUniqueUI(QuestionUI):
-    def __init__(self, parent, choix=None, *args, **kwargs):
-        super().__init__(parent, *args, **kwargs)
+    @staticmethod
+    def question_type():
+        return "Choix unique"
+
+    def __init__(self, parent, question: QuestionQCUnique, *args, **kwargs):
+        super().__init__(parent, question=question, *args, **kwargs)
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
-        if choix is None:
-            self.choix = ["Option 1", "Option 2", "Option 3"]
-        else:
-            self.choix = choix
+
         self.choix_ui = []
         self.choix_var = IntVar(value=-1)
         self.vars = []
 
         def add():
-            self.choix.append("Nouveau choix")
+            self.question.choix_rep.append("Nouveau choix")
             self.update()
 
         add_button_container = Frame(self.container)
@@ -35,7 +38,7 @@ class QuestionQCUniqueUI(QuestionUI):
         self.choix_ui = []
         self.vars = []
 
-        for i, each_choix in enumerate(self.choix):
+        for i, each_choix in enumerate(self.question.choix_rep):
             each_frame = Frame(self.container)
             each_frame.pack(side=TOP, fill="x", expand=True)
 
@@ -47,7 +50,7 @@ class QuestionQCUniqueUI(QuestionUI):
             each_entry.pack(side=LEFT)
 
             def delete(i=i):
-                self.choix.pop(i)
+                self.question.choix_rep.pop(i)
                 self.update()
 
             each_delete = Button(
@@ -56,16 +59,16 @@ class QuestionQCUniqueUI(QuestionUI):
             each_delete.pack(side=RIGHT)
 
             def move_down(i=i):
-                self.choix.insert(i + 1, self.choix.pop(i))
+                self.question.choix_rep.insert(i + 1, self.question.choix_rep.pop(i))
                 self.update()
 
             each_move_down = Button(each_frame, text=" 🠋 ", command=move_down)
             each_move_down.pack(side=RIGHT)
-            if i + 1 == len(self.choix):
+            if i + 1 == len(self.question.choix_rep):
                 each_move_down.config(state="disabled")
 
             def move_up(i=i):
-                self.choix.insert(i - 1, self.choix.pop(i))
+                self.question.choix_rep.insert(i - 1, self.question.choix_rep.pop(i))
                 self.update()
 
             each_move_up = Button(each_frame, text=" 🠉 ", command=move_up)
