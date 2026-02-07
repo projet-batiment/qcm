@@ -109,6 +109,11 @@ class MainView(Frame):
             case QuestionQCMultiples():
                 ui_class = QuestionQCMultiplesUI
 
+            case QuestionLibre():
+                # TODO
+                # ui_class = QuestionLibreUI
+                raise NotImplementedError
+
             case _:
                 raise ValueError(f"Unsupported question type of class '{question.__class__.__name__}'")
 
@@ -125,7 +130,7 @@ class MainView(Frame):
         self.ajouter_question()
 
     def set_qcm(self, qcm: Qcm):
-        logging.info(f"opening qcm '{qcm.titre}'")
+        logging.info(f"Opening qcm '{qcm.titre}'")
         self.qcm = qcm
 
         for i, question in enumerate(qcm.liste_questions):
