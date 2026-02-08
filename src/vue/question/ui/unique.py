@@ -1,9 +1,11 @@
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
+
 from ttkbootstrap import Button, Entry, Frame, IntVar, Radiobutton, StringVar
 
 from model.question import QuestionQCUnique
 
 from .ui import QuestionUI
+
 
 class QuestionQCUniqueUI(QuestionUI):
     @staticmethod
@@ -22,6 +24,7 @@ class QuestionQCUniqueUI(QuestionUI):
 
         def choix_var_changed(*args):
             self.question.id_bonne_reponse = self.choix_var.get()
+
         self.choix_var.trace_add("write", choix_var_changed)
 
         def add():
@@ -55,6 +58,7 @@ class QuestionQCUniqueUI(QuestionUI):
 
             def entry_text_updated(*args, i=i, each_var=each_var):
                 self.question.choix_rep[i] = each_var.get()
+
             each_var.trace_add("write", entry_text_updated)
             self.vars.append(each_var)
 

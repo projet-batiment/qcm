@@ -1,4 +1,6 @@
+from abc import abstractmethod
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
+
 from ttkbootstrap import (
     BooleanVar,
     Button,
@@ -12,10 +14,10 @@ from ttkbootstrap import (
     StringVar,
 )
 
-from abc import abstractmethod
-
 from model.question import Question
+
 from ..callback_type import CallbackCommand
+
 
 class QuestionUI(Frame):
     @staticmethod
@@ -38,6 +40,7 @@ class QuestionUI(Frame):
 
         def titre_var_changed(*args):
             self.question.enonce = self.titre_var.get()
+
         self.titre_var = StringVar(value=question.enonce)
         self.titre_var.trace_add("write", titre_var_changed)
 
@@ -73,6 +76,7 @@ class QuestionUI(Frame):
         def obligatoire_var_changed(*args):
             # TODO: le model n'implémente pas l'infomation "requis/obligatoire"
             raise NotImplementedError
+
         self.obligatoire_var = BooleanVar(value=True)
         self.obligatoire_var.trace_add("write", obligatoire_var_changed)
         obligatoire_ui = Checkbutton(

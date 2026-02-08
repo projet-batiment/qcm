@@ -4,10 +4,16 @@ from ttkbootstrap import Button, Entry, Frame, StringVar
 from ttkbootstrap.scrolled import ScrolledFrame
 
 from model.qcm import Qcm
-from model.question import Question, QuestionQCUnique, QuestionQCMultiples, QuestionLibre
+from model.question import (
+    Question,
+    QuestionLibre,
+    QuestionQCMultiples,
+    QuestionQCUnique,
+)
 
-from .ui import QuestionUI, QuestionQCMultiplesUI, QuestionQCUniqueUI
 from .callback_type import CallbackCommand
+from .ui import QuestionQCMultiplesUI, QuestionQCUniqueUI, QuestionUI
+
 
 class MainView(Frame):
     def __init__(self, parent):
@@ -54,8 +60,7 @@ class MainView(Frame):
                         question_class = QuestionQCUnique
 
                 question = question_class(
-                    question_ui.question.enonce,
-                    question_ui.question.points
+                    question_ui.question.enonce, question_ui.question.points
                 )
 
                 self.__open_question(question)
@@ -115,12 +120,15 @@ class MainView(Frame):
                 raise NotImplementedError
 
             case _:
-                raise ValueError(f"Unsupported question type of class '{question.__class__.__name__}'")
+                raise ValueError(
+                    f"Unsupported question type of class "
+                    f"'{question.__class__.__name__}'"
+                )
 
         question_ui = ui_class(
             self.scroll_container,
             page_callback=self._editeur_callback,
-            question=question
+            question=question,
         )
         question_ui.pack(fill="x", pady=10)
         self.questions_ui.append(question_ui)

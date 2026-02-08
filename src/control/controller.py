@@ -1,10 +1,9 @@
-from tkinter import Frame
 from logging import info
+from tkinter import Frame
 
 from control import AppState
-from vue import splashscreen, question, MenuBar
+from vue import MenuBar, question, splashscreen
 
-from model.qcm import Qcm
 
 class Control:
     def __init__(self, window):

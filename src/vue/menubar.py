@@ -1,5 +1,6 @@
 from tkinter import Menu
 
+
 class MenuBar(Menu):
     def __init__(self, parent, controller):
         super().__init__(parent)

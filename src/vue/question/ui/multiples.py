@@ -1,17 +1,23 @@
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
+
 from ttkbootstrap import BooleanVar, Button, Checkbutton, Entry, Frame, StringVar
 
 from model.question import QuestionQCMultiples
 
 from .ui import QuestionUI
 
+
 class QuestionQCMultiplesUI(QuestionUI):
     @staticmethod
     def question_type():
         return "Choix multiples"
 
-    def __init__(self, parent, page_callback, question: QuestionQCMultiples, *args, **kwargs):
-        super().__init__(parent, page_callback=page_callback, question=question, *args, **kwargs)
+    def __init__(
+        self, parent, page_callback, question: QuestionQCMultiples, *args, **kwargs
+    ):
+        super().__init__(
+            parent, page_callback=page_callback, question=question, *args, **kwargs
+        )
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
@@ -47,6 +53,7 @@ class QuestionQCMultiplesUI(QuestionUI):
 
             def check_value_updated(*args, i=i, etat_var=etat_var):
                 self.question.set_bonne_reponse(i, etat_var.get())
+
             etat_var.trace_add("write", check_value_updated)
             self.vars_etat.append(etat_var)
 
@@ -57,6 +64,7 @@ class QuestionQCMultiplesUI(QuestionUI):
 
             def entry_text_updated(*args, i=i, each_var=each_var):
                 self.question.choix_rep[i] = each_var.get()
+
             each_var.trace_add("write", entry_text_updated)
             self.vars_texte.append(each_var)
 
