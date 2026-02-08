@@ -1,14 +1,14 @@
 #!/usr/bin/env python
+import logging
+
 from ttkbootstrap import Window
 
-from vue import question
-from vue import reponse
-
+from control.controller import Control
 from model.qcm import Qcm
-from model.question import QuestionQCUnique, QuestionQCMultiples, QuestionLibre
+from model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
 
-import logging
 logging.basicConfig(level=logging.DEBUG)
+
 
 
 class Main:
@@ -23,7 +23,7 @@ class Main:
                 enonce="Ceci est un test",
                 points=3,
                 choix_rep=["hello", "world"],
-                id_bonne_reponse=0
+                id_bonne_reponse=0,
             )
         )
         qcm.ajouter_question(
@@ -31,19 +31,14 @@ class Main:
                 enonce="Ceci est un test",
                 points=3,
                 choix_rep=["hello", "world", "Faux"],
-                id_bonne_reponse=[0, 1]
+                id_bonne_reponse=[0, 1],
             )
         )
         qcm.ajouter_question(
-            QuestionLibre(
-                enonce="Ceci est un test",
-                points=1,
-                rep_attendue="bien"
-            )
+            QuestionLibre(enonce="Ceci est un test", points=1, rep_attendue="bien")
         )
 
-        reponse.MainView(self.window, qcm).pack(fill="y", expand=True)
-        question.MainView(self.window).pack(fill="y", expand=True)
+        Control(self.window)
 
     def main(self):
         self.window.mainloop()
