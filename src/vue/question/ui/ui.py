@@ -36,7 +36,11 @@ class QuestionUI(Frame):
         self.haut = Frame(self)
         self.haut.pack(side=TOP, fill="x", expand=True, pady=5)
 
+        def titre_var_changed(*args):
+            self.question.enonce = self.titre_var.get()
         self.titre_var = StringVar(value=question.enonce)
+        self.titre_var.trace_add("write", titre_var_changed)
+
         self.titre_entry = Entry(self.haut, textvariable=self.titre_var, width=40)
         self.titre_entry.pack(side=LEFT, padx=5)
 
@@ -66,7 +70,11 @@ class QuestionUI(Frame):
         self.bas = Frame(self)
         self.bas.pack(side=BOTTOM, fill="x", expand=True, pady=5)
 
+        def obligatoire_var_changed(*args):
+            # TODO: le model n'implémente pas l'infomation "requis/obligatoire"
+            raise NotImplementedError
         self.obligatoire_var = BooleanVar(value=True)
+        self.obligatoire_var.trace_add("write", obligatoire_var_changed)
         obligatoire_ui = Checkbutton(
             self.bas, text="Requis", variable=self.obligatoire_var
         )
