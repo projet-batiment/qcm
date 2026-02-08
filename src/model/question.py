@@ -46,6 +46,13 @@ class QuestionQCMultiples(Question):
         creator=lambda texte: Choix(texte=texte, est_correct=False),
     )
 
+    choix_bonne_reponse = association_proxy(
+        "choix_bdd",
+        "est_correct",
+        proxy_factory=set,
+        # no creator: only create Choix with choix_rep.append
+    )
+
     __mapper_args__ = {"polymorphic_identity": "qcm_multiple"}
 
     def __init__(
@@ -65,16 +72,16 @@ class QuestionQCMultiples(Question):
 
     # Idem pour les bonnes réponses, via les listes
     @property
-    def id_bonne_reponse(self) -> List[int]:
+    def id_bonne_reponse(self) -> set[int]:
         """Trouve les indices des choix marqués 'True' en BDD"""
-        indices = []
+        indices = set()
         for index, choix in enumerate(self.choix_bdd):
             if choix.est_correct:
-                indices.append(index)
+                indices.add(index)
         return indices
 
     @id_bonne_reponse.setter
-    def id_bonne_reponse(self, liste_indices: List[int]) -> None:
+    def id_bonne_reponse(self, liste_indices: set[int]) -> None:
         """Met à jour les bonnes réponses en BDD via une liste"""
         for index, choix in enumerate(self.choix_bdd):
             if index in liste_indices:
@@ -82,6 +89,8 @@ class QuestionQCMultiples(Question):
             else:
                 choix.est_correct = False
 
+    def set_bonne_reponse(self, index: int, value: bool):
+        self.choix_bdd[index].est_correct = value
 
 class QuestionQCUnique(QuestionQCMultiples):
     __mapper_args__ = {"polymorphic_identity": "qcm_unique"}
@@ -108,7 +117,7 @@ class QuestionQCUnique(QuestionQCMultiples):
         """Retourne l'index de la bonne réponse unique."""
         indices = super().id_bonne_reponse
         if len(indices) == 1:
-            return indices[0]
+            return next(iter(indices))
         return -1
 
     @id_bonne_reponse.setter
