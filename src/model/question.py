@@ -92,6 +92,7 @@ class QuestionQCMultiples(Question):
     def set_bonne_reponse(self, index: int, value: bool):
         self.choix_bdd[index].est_correct = value
 
+
 class QuestionQCUnique(QuestionQCMultiples):
     __mapper_args__ = {"polymorphic_identity": "qcm_unique"}
 
