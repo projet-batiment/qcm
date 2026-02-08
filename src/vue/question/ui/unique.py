@@ -8,9 +8,7 @@ from .ui import QuestionUI
 
 
 class QuestionQCUniqueUI(QuestionUI):
-    @staticmethod
-    def question_type():
-        return "Choix unique"
+    question_type = "Choix unique"
 
     def __init__(self, parent, question: QuestionQCUnique, *args, **kwargs):
         super().__init__(parent, question=question, *args, **kwargs)
@@ -93,3 +91,6 @@ class QuestionQCUniqueUI(QuestionUI):
                 each_move_up.config(state="disabled")
 
             self.choix_ui.append(each_frame)
+
+
+QuestionUI.implementations.append(QuestionQCUniqueUI)

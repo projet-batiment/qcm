@@ -8,9 +8,7 @@ from .ui import QuestionUI
 
 
 class QuestionQCMultiplesUI(QuestionUI):
-    @staticmethod
-    def question_type():
-        return "Choix multiples"
+    question_type = "Choix multiples"
 
     def __init__(
         self, parent, page_callback, question: QuestionQCMultiples, *args, **kwargs
@@ -98,3 +96,6 @@ class QuestionQCMultiplesUI(QuestionUI):
                 btn_up.config(state="disabled")
 
             self.choix_ui.append(each_frame)
+
+
+QuestionUI.implementations.append(QuestionQCMultiplesUI)

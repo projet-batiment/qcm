@@ -12,7 +12,7 @@ from model.question import (
 )
 
 from .callback_type import CallbackCommand
-from .ui import QuestionQCMultiplesUI, QuestionQCUniqueUI, QuestionUI
+from .ui import QuestionLibreUI, QuestionQCMultiplesUI, QuestionQCUniqueUI, QuestionUI
 
 
 class MainView(Frame):
@@ -42,7 +42,7 @@ class MainView(Frame):
         try:
             question_index = self.questions_ui.index(question_ui)
         except ValueError:
-            raise ValueError("question not found in the list")
+            raise ValueError("Question not found in the list")
 
         match command:
             case CallbackCommand.DELETE:
@@ -50,14 +50,19 @@ class MainView(Frame):
 
             case CallbackCommand.CHANGE_TYPE:
                 match question_ui.type_var.get():
-                    case "Question libre":
+                    case QuestionLibreUI.question_type:
                         question_class = QuestionLibre
 
-                    case "Choix multiples":
+                    case QuestionQCMultiplesUI.question_type:
                         question_class = QuestionQCMultiples
 
-                    case "Choix unique":
+                    case QuestionQCUniqueUI.question_type:
                         question_class = QuestionQCUnique
+
+                    case _:
+                        raise ValueError(
+                            f"Unknown question type '{question_ui.type_var.get()}'"
+                        )
 
                 question = question_class(
                     question_ui.question.enonce, question_ui.question.points
@@ -115,9 +120,7 @@ class MainView(Frame):
                 ui_class = QuestionQCMultiplesUI
 
             case QuestionLibre():
-                # TODO
-                # ui_class = QuestionLibreUI
-                raise NotImplementedError
+                ui_class = QuestionLibreUI
 
             case _:
                 raise ValueError(

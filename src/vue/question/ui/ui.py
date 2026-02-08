@@ -1,4 +1,5 @@
-from abc import abstractmethod
+from __future__ import annotations
+
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
 
 from ttkbootstrap import (
@@ -20,10 +21,15 @@ from ..callback_type import CallbackCommand
 
 
 class QuestionUI(Frame):
-    @staticmethod
-    @abstractmethod
-    def question_type():
-        pass
+    # NOTE: question_type n'est plus une fonction statique puisque
+    #  cela complique pour un rien la logique et la lourdeur de
+    #  l'exécution dans mainview alors qu'avec un simple attribut
+    #  il n'y a aucune complication.
+    #  Certes c'est moins propre car on a pas de décorateur.
+    #  Mais au moins c'est pas boilerplate.
+    #  Et puis python avait qu'à avoir un décorateur abstractattribute aussi !!
+
+    implementations: list[QuestionUI] = []
 
     def __init__(
         self,
@@ -47,11 +53,12 @@ class QuestionUI(Frame):
         self.titre_entry = Entry(self.haut, textvariable=self.titre_var, width=40)
         self.titre_entry.pack(side=LEFT, padx=5)
 
-        self.type_var = StringVar(value=self.question_type())
+        # NOTE: self.question_type: voir note en haut de classe
+        self.type_var = StringVar(value=self.question_type)
         self.type_selector = Combobox(
             self.haut,
             textvariable=self.type_var,
-            values=["Question libre", "Choix multiples", "Choix unique"],
+            values=[x.question_type for x in self.implementations],
             state="readonly",
             width=15,
         )
@@ -119,14 +126,3 @@ class QuestionUI(Frame):
 
     def duplicate(self):
         raise NotImplementedError
-
-    @abstractmethod
-    def _read_question(self):
-        pass
-
-    def read_question(self, question):
-        self.question = question
-
-    @abstractmethod
-    def write_question(self):
-        pass
