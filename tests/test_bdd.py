@@ -47,7 +47,7 @@ def test_scenario_complet_creation_lecture(bdd_test):
         enonce="Quels sont les chiffres pairs ?",
         points=2,
         choix_rep=["1", "2", "3", "4"],
-        id_bonne_reponse=[1, 3],  # Index 1 ('2') et 3 ('4')
+        id_bonne_reponse={1, 3},  # Index 1 ('2') et 3 ('4')
     )
 
     q_libre = QuestionLibre(
@@ -73,7 +73,7 @@ def test_scenario_complet_creation_lecture(bdd_test):
     assert len(q1.choix_rep) == 4
     assert q1.choix_rep[0] == "1"
     assert q1.choix_rep[1] == "2"
-    assert q1.id_bonne_reponse == [1, 3]
+    assert q1.id_bonne_reponse == {1, 3}
 
     q2 = qcm.liste_questions[1]
     assert isinstance(q2, QuestionLibre)

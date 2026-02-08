@@ -1,6 +1,7 @@
 from typing import List
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import relationship
 
@@ -38,6 +39,20 @@ class QuestionQCMultiples(Question):
         cascade="all, delete-orphan",
     )
 
+    # permet l'édition de la liste sans devoir la réassigner complètement
+    choix_rep = association_proxy(
+        "choix_bdd",
+        "texte",
+        creator=lambda texte: Choix(texte=texte, est_correct=False),
+    )
+
+    choix_bonne_reponse = association_proxy(
+        "choix_bdd",
+        "est_correct",
+        proxy_factory=set,
+        # no creator: only create Choix with choix_rep.append
+    )
+
     __mapper_args__ = {"polymorphic_identity": "qcm_multiple"}
 
     def __init__(
@@ -55,40 +70,27 @@ class QuestionQCMultiples(Question):
         if id_bonne_reponse:
             self.id_bonne_reponse = id_bonne_reponse
 
-    # Création des fonctions pour gérer les choix de réponses via des listes simples
-    @property
-    def choix_rep(self) -> List[str]:
-        """Retourne la liste des textes des choix de réponses."""
-        textes = []
-        for rep in self.choix_bdd:
-            textes.append(rep.texte)
-        return textes
-
-    @choix_rep.setter
-    def choix_rep(self, ajout_de_choix: List[str]) -> None:
-        """Met à jour la liste des choix de réponses en bdd."""
-        self.choix_bdd = []
-        for choix in ajout_de_choix:
-            self.choix_bdd.append(Choix(texte=choix, est_correct=False))
-
     # Idem pour les bonnes réponses, via les listes
     @property
-    def id_bonne_reponse(self) -> List[int]:
+    def id_bonne_reponse(self) -> set[int]:
         """Trouve les indices des choix marqués 'True' en BDD"""
-        indices = []
+        indices = set()
         for index, choix in enumerate(self.choix_bdd):
             if choix.est_correct:
-                indices.append(index)
+                indices.add(index)
         return indices
 
     @id_bonne_reponse.setter
-    def id_bonne_reponse(self, liste_indices: List[int]) -> None:
+    def id_bonne_reponse(self, liste_indices: set[int]) -> None:
         """Met à jour les bonnes réponses en BDD via une liste"""
         for index, choix in enumerate(self.choix_bdd):
             if index in liste_indices:
                 choix.est_correct = True
             else:
                 choix.est_correct = False
+
+    def set_bonne_reponse(self, index: int, value: bool):
+        self.choix_bdd[index].est_correct = value
 
 
 class QuestionQCUnique(QuestionQCMultiples):
@@ -116,7 +118,7 @@ class QuestionQCUnique(QuestionQCMultiples):
         """Retourne l'index de la bonne réponse unique."""
         indices = super().id_bonne_reponse
         if len(indices) == 1:
-            return indices[0]
+            return next(iter(indices))
         return -1
 
     @id_bonne_reponse.setter
