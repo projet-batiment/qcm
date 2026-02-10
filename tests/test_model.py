@@ -1,5 +1,6 @@
-import model.qcm  # noqa: F401
 import pytest
+
+import model.qcm  # noqa: F401
 from model.question import QuestionQCMultiples, QuestionQCUnique
 from model.reponse import ReponseQCMultiples, ReponseQCUnique
 
