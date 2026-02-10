@@ -10,7 +10,6 @@ from model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
 logging.basicConfig(level=logging.DEBUG)
 
 
-
 class Main:
     def __init__(self):
         self.window = Window(themename="flatly")
