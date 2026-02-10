@@ -18,5 +18,8 @@ line-length = 88
 [tool.ruff.lint]
 select = ["E", "F", "N", "I"]
 
+[tool.ruff.lint.isort]
+known-first-party = ["qcm", "model", "control", "vue"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
