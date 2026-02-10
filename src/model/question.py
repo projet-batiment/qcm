@@ -13,6 +13,7 @@ class Question(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     enonce = Column(String, nullable=False)
     points = Column(Integer, default=1, nullable=False)
+    obligatoire = Column(Boolean, default=True, nullable=False)
     type_question = Column(String(50))
 
     qcm_id = Column(Integer, ForeignKey("qcm.id"))
@@ -23,9 +24,10 @@ class Question(Base):
         "polymorphic_on": type_question,
     }
 
-    def __init__(self, enonce: str, points: int = 1):
+    def __init__(self, enonce: str, points: int = 1, obligatoire: bool = True):
         self.enonce = enonce
         self.points = points
+        self.obligatoire = obligatoire
 
 
 class QuestionQCMultiples(Question):
@@ -61,8 +63,9 @@ class QuestionQCMultiples(Question):
         points: int,
         choix_rep: List[str] = None,
         id_bonne_reponse: List[int] = None,
+        obligatoire: bool = True,
     ):
-        super().__init__(enonce, points)
+        super().__init__(enonce, points, obligatoire=obligatoire)
         # ici on appel une méthode "choix_rep" qui va créer les objets BDD.
         if choix_rep:
             self.choix_rep = choix_rep
@@ -102,11 +105,14 @@ class QuestionQCUnique(QuestionQCMultiples):
         points: int,
         choix_rep: List[str] = None,
         id_bonne_reponse: int = -1,
+        obligatoire: bool = True,
     ):
         """
         :param id_bonne_reponse: Un ENTIER de l'indice correct
         """
-        super().__init__(enonce, points, choix_rep, id_bonne_reponse=None)
+        super().__init__(
+            enonce, points, choix_rep, id_bonne_reponse=None, obligatoire=obligatoire
+        )
         # On transforme l'int unique en liste pour le stockage parent
         if id_bonne_reponse >= 0:
             self.id_bonne_reponse = id_bonne_reponse
@@ -137,8 +143,10 @@ class QuestionLibre(Question):
     rep_attendue = Column(String)
     __mapper_args__ = {"polymorphic_identity": "libre"}
 
-    def __init__(self, enonce: str, points: int, rep_attendue: str):
-        super().__init__(enonce, points)
+    def __init__(
+        self, enonce: str, points: int, rep_attendue: str, obligatoire: bool = True
+    ):
+        super().__init__(enonce, points, obligatoire=obligatoire)
         self.rep_attendue = rep_attendue
 
 
