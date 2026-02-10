@@ -13,16 +13,29 @@ Ce projet a été réalisé dans le cadre du module de Développement Collaborat
     * Réponse Libre.
 * **Gestion des données** : Sauvegarde et chargement des données via une base de données **SQLite** (gérée par SQLAlchemy).
 
-## Installation :
+## Installation et Configuration :
+
+0.  **Pré-requis** :
+Avoir Python 3.10 ou supérieur installé.
 
 1.  **Cloner le projet** :
     ```
     git clone https://github.com/projet-batiment/qcm.git
     ```
 
-2.  **Installer des packages** :
+2.  **Installation standard (Utilisateur)** : Pour installer l'application et ses dépendances
     ```
-    pip install sqlalchemy ttkbootstrap pytest
+    pip install .
+    ```
+
+3.  **Installation pour le développement** : Pour contribuer au projet :
+    ```
+    pip install -e ".[dev]"
+    ```
+
+    Pour garantir la qualité et le formatage du code, on utilise pre-commit et Ruff.
+    ```
+    pre-commit install
     ```
 
 ## Initialisation de la Base de Données
@@ -36,7 +49,7 @@ python src/scripts/init_bdd.py
 
 ## Lancement de l'application :
 ```
-python src/main.py
+python -m qcm.main
 ```
 
 ## Auteurs :
