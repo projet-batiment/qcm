@@ -39,10 +39,8 @@ class Main:
 
     def main(self):
         self.window.mainloop()
-        self.setup_logging()
 
 
 if __name__ == "__main__":
-    Main().main()
     setup_logging()
-
+    Main().main()
