@@ -8,7 +8,6 @@ from sqlalchemy.orm import sessionmaker
 from qcm.model.bdd_init import Base
 from qcm.model.qcm import Qcm
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 

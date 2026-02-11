@@ -1,13 +1,11 @@
 #!/usr/bin/env python
-import logging
 
 from ttkbootstrap import Window
 
 from qcm.control.controller import Control
 from qcm.model.qcm import Qcm
 from qcm.model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
-
-logging.basicConfig(level=logging.DEBUG)
+from qcm.utils.logs import setup_logging
 
 
 class Main:
@@ -44,4 +42,5 @@ class Main:
 
 
 if __name__ == "__main__":
+    setup_logging()
     Main().main()
