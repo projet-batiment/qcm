@@ -6,6 +6,7 @@ from ttkbootstrap import Window
 from control.controller import Control
 from model.qcm import Qcm
 from model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
+from qcm.utils.logs import setup_logging
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -41,6 +42,7 @@ class Main:
 
     def main(self):
         self.window.mainloop()
+        self.setup_logging()
 
 
 if __name__ == "__main__":
