@@ -8,8 +8,6 @@ from model.qcm import Qcm
 from model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
 from qcm.utils.logs import setup_logging
 
-logging.basicConfig(level=logging.DEBUG)
-
 
 class Main:
     def __init__(self):
@@ -47,3 +45,5 @@ class Main:
 
 if __name__ == "__main__":
     Main().main()
+    setup_logging()
+

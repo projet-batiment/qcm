@@ -1,11 +1,11 @@
 import os
 import logging
-logger = logging.getLogger(__name__)
 
 from control.bdd_manager import BddManager
 from src.model.qcm import Qcm
 from src.model.question import QuestionLibre, QuestionQCMultiples
 
+logger = logging.getLogger(__name__)
 
 def init_db():
     logger.info("Suppression de l'ancienne base de données...")
