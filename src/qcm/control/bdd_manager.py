@@ -8,9 +8,7 @@ from sqlalchemy.orm import sessionmaker
 from qcm.model.bdd_init import Base
 from qcm.model.qcm import Qcm
 
-
 logger = logging.getLogger(__name__)
-
 
 class BddManager:
     def __init__(self, db_filename="qcm.db"):
