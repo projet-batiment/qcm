@@ -15,7 +15,7 @@ from ttkbootstrap import (
     StringVar,
 )
 
-from model.question import Question
+from qcm.model.question import Question
 
 from ..callback_type import CallbackCommand
 

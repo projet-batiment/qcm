@@ -1,6 +1,6 @@
 from ttkbootstrap import Entry, Frame, StringVar
 
-from model.question import QuestionLibre
+from qcm.model.question import QuestionLibre
 
 from .ui import QuestionUI
 

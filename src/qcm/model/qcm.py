@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, List, Optional
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from model.bdd_init import Base
+from qcm.model.bdd_init import Base
 
 if TYPE_CHECKING:
     from model.question import Question
