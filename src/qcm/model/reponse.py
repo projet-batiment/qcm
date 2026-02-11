@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from dataclasses import dataclass, field
 
-from qcm.model.question import (
+from model.question import (
     Question,
     QuestionLibre,
     QuestionQCMultiples,
@@ -9,57 +9,37 @@ from qcm.model.question import (
 )
 
 
+@dataclass
 class Reponse(ABC):
-    """
-    Classe abstraite qui lie une logique de vérification à une Question donnée.
-    """
-
-    def __init__(self, question: Question):
-        self.question = question
+    question: Question
 
     @abstractmethod
-    def verifier(self, proposition_utilisateur: Any) -> bool:
-        """
-        Vérifie la validité de la proposition utilisateur.
-        proposition_utilisateur: L'index (int) ou le texte (str)
-        fourni par l'utilisateur.
-        """
+    def verifier(self):
         pass
 
 
-class ReponseQCMultiples(Reponse):
-    def __init__(self, question_qcmultiples: QuestionQCMultiples):
-        super().__init__(question_qcmultiples)
-
-    def verifier(self, proposition_utilisateur: int) -> bool:
-        """
-        Vérifie si l'index choisi par l'utilisateur est dans la liste
-        des bonnes réponses.
-        On accède aux données via self.question.
-        """
-        qcm: QuestionQCMultiples = self.question
-        return proposition_utilisateur in qcm.id_bonne_reponse
-
-
+@dataclass
 class ReponseQCUnique(Reponse):
-    def __init__(self, question_qcunique: QuestionQCUnique):
-        super().__init__(question_qcunique)
+    question: QuestionQCUnique
+    reponse_choisie: int = QuestionQCUnique.NO_CHOICE_INDEX
 
-    def verifier(self, proposition_utilisateur: int):
-        qcu: QuestionQCUnique = self.question
-        return proposition_utilisateur == qcu.id_bonne_reponse
+    def verifier(self):
+        self.question.index_bonne_reponse == self.reponse_choisie
 
 
+@dataclass
+class ReponseQCMultiples(Reponse):
+    question: QuestionQCMultiples
+    reponses_choisies: set[int] = field(default_factory=set)
+
+    def verifier(self):
+        self.question.index_bonnes_reponses == self.reponses_choisies
+
+
+@dataclass
 class ReponseLibre(Reponse):
-    def __init__(self, question_libre: QuestionLibre):
-        super().__init__(question_libre)
+    question: QuestionLibre
+    reponse: str = "Réponse"
 
-    def verifier(self, proposition_utilisateur: str) -> bool:
-        """
-        Compare la saisie avec la réponse attendue stockée dans la question.
-        """
-        q_libre: QuestionLibre = self.question
-        return (
-            proposition_utilisateur.strip().lower()
-            == q_libre.rep_attendue.strip().lower()
-        )
+    def verifier(self):
+        self.question.rep_attendue.strip().lower() == self.reponse.strip().lower()
