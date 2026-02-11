@@ -2,7 +2,7 @@ from tkinter import BOTTOM, LEFT, RIGHT, TOP
 
 from ttkbootstrap import Button, Entry, Frame, IntVar, Radiobutton, StringVar
 
-from model.question import QuestionQCUnique
+from qcm.model.question import QuestionQCUnique
 
 from .ui import QuestionUI
 

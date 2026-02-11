@@ -1,8 +1,8 @@
 from ttkbootstrap import Button, Frame, Label
 from ttkbootstrap.scrolled import ScrolledFrame
 
-from model import question
-from model.qcm import Qcm
+from qcm.model import question
+from qcm.model.qcm import Qcm
 
 from .ui import ReponseLibreUI, ReponseQCMultiplesUI, ReponseQCUniqueUI
 

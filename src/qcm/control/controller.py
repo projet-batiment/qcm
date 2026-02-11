@@ -1,8 +1,8 @@
 from logging import info
 from tkinter import Frame
 
-from control import AppState
-from vue import MenuBar, question, splashscreen
+from qcm.control import AppState
+from qcm.vue import MenuBar, question, splashscreen
 
 
 class Control:

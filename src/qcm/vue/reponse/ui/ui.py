@@ -2,7 +2,7 @@ from tkinter import BOTTOM, LEFT, RIGHT, TOP
 
 from ttkbootstrap import Frame, Label
 
-from model.question import Question
+from qcm.model.question import Question
 
 
 class ReponseUI(Frame):
