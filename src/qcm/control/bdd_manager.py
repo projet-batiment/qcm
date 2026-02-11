@@ -10,6 +10,7 @@ from qcm.model.qcm import Qcm
 
 logger = logging.getLogger(__name__)
 
+
 class BddManager:
     def __init__(self, db_filename="qcm.db"):
         self.engine = create_engine(

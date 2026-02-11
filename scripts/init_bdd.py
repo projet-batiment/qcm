@@ -7,6 +7,7 @@ from qcm.model.question import QuestionLibre, QuestionQCMultiples
 
 logger = logging.getLogger(__name__)
 
+
 def init_db():
     logger.info("Suppression de l'ancienne base de données...")
     if os.path.exists("qcm.db"):
