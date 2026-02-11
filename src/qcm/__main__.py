@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import logging
 
 from ttkbootstrap import Window
 
