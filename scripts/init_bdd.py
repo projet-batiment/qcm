@@ -1,9 +1,9 @@
 import os
 import logging
 
-from control.bdd_manager import BddManager
-from src.model.qcm import Qcm
-from src.model.question import QuestionLibre, QuestionQCMultiples
+from qcm.control.bdd_manager import BddManager
+from qcm.model.qcm import Qcm
+from qcm.model.question import QuestionLibre, QuestionQCMultiples
 
 logger = logging.getLogger(__name__)
 

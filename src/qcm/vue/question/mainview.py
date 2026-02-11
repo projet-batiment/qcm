@@ -3,8 +3,8 @@ import logging
 from ttkbootstrap import Button, Entry, Frame, StringVar
 from ttkbootstrap.scrolled import ScrolledFrame
 
-from model.qcm import Qcm
-from model.question import (
+from qcm.model.qcm import Qcm
+from qcm.model.question import (
     Question,
     QuestionLibre,
     QuestionQCMultiples,

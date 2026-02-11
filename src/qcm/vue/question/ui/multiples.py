@@ -2,7 +2,7 @@ from tkinter import BOTTOM, LEFT, RIGHT, TOP
 
 from ttkbootstrap import BooleanVar, Button, Checkbutton, Entry, Frame, StringVar
 
-from model.question import QuestionQCMultiples
+from qcm.model.question import QuestionQCMultiples
 
 from .ui import QuestionUI
 

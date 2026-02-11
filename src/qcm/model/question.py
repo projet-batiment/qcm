@@ -5,7 +5,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import relationship
 
-from model.bdd_init import Base
+from qcm.model.bdd_init import Base
 
 
 class Question(Base):

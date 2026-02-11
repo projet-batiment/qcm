@@ -3,9 +3,9 @@ import os
 import pytest
 from sqlalchemy import text
 
-from control.bdd_manager import BddManager
-from model.qcm import Qcm
-from model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
+from qcm.control.bdd_manager import BddManager
+from qcm.model.qcm import Qcm
+from qcm.model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
 
 
 # "fixture" prépare une bdd vide avant chaque test et la nettoie après

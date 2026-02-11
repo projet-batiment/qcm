@@ -3,9 +3,9 @@ import logging
 
 from ttkbootstrap import Window
 
-from control.controller import Control
-from model.qcm import Qcm
-from model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
+from qcm.control.controller import Control
+from qcm.model.qcm import Qcm
+from qcm.model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
 from qcm.utils.logs import setup_logging
 
 

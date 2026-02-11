@@ -5,8 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 
-from model.bdd_init import Base
-from model.qcm import Qcm
+from qcm.model.bdd_init import Base
+from qcm.model.qcm import Qcm
 
 
 logger = logging.getLogger(__name__)
