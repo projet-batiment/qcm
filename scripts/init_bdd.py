@@ -1,5 +1,5 @@
-import os
 import logging
+import os
 
 from qcm.control.bdd_manager import BddManager
 from qcm.model.qcm import Qcm
