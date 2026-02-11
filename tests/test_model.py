@@ -1,8 +1,8 @@
 import pytest
 
-import model.qcm  # noqa: F401
-from model.question import QuestionQCMultiples, QuestionQCUnique
-from model.reponse import ReponseQCMultiples, ReponseQCUnique
+import qcm.model.qcm  # noqa: F401
+from qcm.model.question import QuestionQCMultiples, QuestionQCUnique
+from qcm.model.reponse import ReponseQCMultiples, ReponseQCUnique
 
 # noqa: F401 : Afin que Ruff ne se plaigne pas de l'import non utilisé.
 
