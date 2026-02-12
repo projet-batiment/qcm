@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from model.question import Question
 
 
-class Qcm(Base):
+class QcmDB(Base):
     """
     Classe modèle représentant un questionnaire (conteneur de questions).
     Elle gère la collection de questions et le calcul des scores théoriques.
@@ -19,8 +19,8 @@ class Qcm(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     titre = Column(String, nullable=False)
     liste_questions = relationship(
-        "Question",
-        order_by="Question.id",
+        "QuestionDB",
+        order_by="QuestionDB.id",
         back_populates="qcm",
         cascade="all, delete-orphan",
     )

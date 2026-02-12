@@ -4,11 +4,12 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.session import Session
 
 from qcm.model.bdd_init import Base
 
 
-class Question(Base):
+class QuestionDB(Base):
     __tablename__ = "questions"
     id = Column(Integer, primary_key=True, autoincrement=True)
     enonce = Column(String, nullable=False)
@@ -17,7 +18,7 @@ class Question(Base):
     type_question = Column(String(50))
 
     qcm_id = Column(Integer, ForeignKey("qcm.id"))
-    qcm = relationship("Qcm", back_populates="liste_questions")
+    qcm = relationship("QcmDB", back_populates="liste_questions")
 
     __mapper_args__ = {
         "polymorphic_identity": "question",
@@ -29,8 +30,7 @@ class Question(Base):
         self.points = points
         self.obligatoire = obligatoire
 
-
-class QuestionQCMultiples(Question):
+class QuestionQCMultiplesDB(QuestionDB):
     __tablename__ = "questions_qcm"
     id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
     choix_bdd = relationship(
@@ -59,13 +59,11 @@ class QuestionQCMultiples(Question):
 
     def __init__(
         self,
-        enonce: str,
-        points: int,
         choix_rep: List[str] = None,
         id_bonne_reponse: List[int] = None,
-        obligatoire: bool = True,
+        **kwargs,
     ):
-        super().__init__(enonce, points, obligatoire=obligatoire)
+        super().__init__(**kwargs)
         # ici on appel une méthode "choix_rep" qui va créer les objets BDD.
         if choix_rep:
             self.choix_rep = choix_rep
@@ -96,22 +94,19 @@ class QuestionQCMultiples(Question):
         self.choix_bdd[index].est_correct = value
 
 
-class QuestionQCUnique(QuestionQCMultiples):
+class QuestionQCUniqueDB(QuestionQCMultiplesDB):
     __mapper_args__ = {"polymorphic_identity": "qcm_unique"}
 
     def __init__(
         self,
-        enonce: str,
-        points: int,
-        choix_rep: List[str] = None,
         id_bonne_reponse: int = -1,
-        obligatoire: bool = True,
+        **kwargs,
     ):
         """
         :param id_bonne_reponse: Un ENTIER de l'indice correct
         """
         super().__init__(
-            enonce, points, choix_rep, id_bonne_reponse=None, obligatoire=obligatoire
+            id_bonne_reponse=None, **kwargs
         )
         # On transforme l'int unique en liste pour le stockage parent
         if id_bonne_reponse >= 0:
@@ -137,16 +132,16 @@ class QuestionQCUnique(QuestionQCMultiples):
                 choix.est_correct = False
 
 
-class QuestionLibre(Question):
+class QuestionLibreDB(QuestionDB):
     __tablename__ = "questions_libre"
     id = Column(Integer, ForeignKey("questions.id"), primary_key=True)
     rep_attendue = Column(String)
     __mapper_args__ = {"polymorphic_identity": "libre"}
 
     def __init__(
-        self, enonce: str, points: int, rep_attendue: str, obligatoire: bool = True
+        self, rep_attendue: str, **kwargs
     ):
-        super().__init__(enonce, points, obligatoire=obligatoire)
+        super().__init__(**kwargs)
         self.rep_attendue = rep_attendue
 
 
@@ -158,7 +153,7 @@ class Choix(Base):
     texte = Column(String, nullable=False)
     est_correct = Column(Boolean, default=False)
     question_id = Column(Integer, ForeignKey("questions_qcm.id"))
-    question = relationship("QuestionQCMultiples", back_populates="choix_bdd")
+    question = relationship("QuestionQCMultiplesDB", back_populates="choix_bdd")
 
     def __init__(self, texte: str, est_correct: bool = False):
         self.texte = texte

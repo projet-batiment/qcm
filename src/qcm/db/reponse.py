@@ -9,7 +9,7 @@ from qcm.model.question import (
 )
 
 
-class Reponse(ABC):
+class ReponseDB(ABC):
     """
     Classe abstraite qui lie une logique de vérification à une Question donnée.
     """
@@ -27,7 +27,7 @@ class Reponse(ABC):
         pass
 
 
-class ReponseQCMultiples(Reponse):
+class ReponseQCMultiplesDB(ReponseDB):
     def __init__(self, question_qcmultiples: QuestionQCMultiples):
         super().__init__(question_qcmultiples)
 
@@ -41,7 +41,7 @@ class ReponseQCMultiples(Reponse):
         return proposition_utilisateur in qcm.id_bonne_reponse
 
 
-class ReponseQCUnique(Reponse):
+class ReponseQCUnique(ReponseDB):
     def __init__(self, question_qcunique: QuestionQCUnique):
         super().__init__(question_qcunique)
 
@@ -50,7 +50,7 @@ class ReponseQCUnique(Reponse):
         return proposition_utilisateur == qcu.id_bonne_reponse
 
 
-class ReponseLibre(Reponse):
+class ReponseLibre(ReponseDB):
     def __init__(self, question_libre: QuestionLibre):
         super().__init__(question_libre)
 

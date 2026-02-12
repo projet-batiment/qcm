@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from model.question import Question
+from qcm.model.question import Question
 
 
 @dataclass
