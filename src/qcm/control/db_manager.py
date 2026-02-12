@@ -2,6 +2,8 @@ from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 
+from contextlib import contextmanager
+
 import logging
 
 from qcm.db.bdd_init import Base
@@ -15,6 +17,7 @@ from qcm.db.reponse import *
 
 logger = logging.getLogger(__name__)
 
+@contextmanager
 def open_session(filename: str):
     logger.debug(f"Ouverture du fichier '{filename}'")
 
@@ -24,6 +27,7 @@ def open_session(filename: str):
         echo=False,
     )
 
+    # database structure
     if not inspect(engine).get_table_names():
         try:
             logger.debug("Aucune table trouvée: Initialisation de la base de donnée")
@@ -35,11 +39,21 @@ def open_session(filename: str):
     else:
         logger.debug("La base de données contient déjà une structure de données")
 
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    logger.info("Session de la bdd ouverte")
+    # handle ourself session and engine disposal
+    try:
+        logger.info("Session de la bdd ouverte")
+        session = sessionmaker(bind=engine)()
+        yield session
 
-    return session
+    except Exception as e:
+        logger.error(f"An exception has occured: {e}")
+        raise e
+
+    finally:
+        logger.info("Closing connection")
+        session.close()
+        engine.dispose()
+        logger.info("Session has been closed.")
 
 def save_to_file(qcm: Qcm, filename: str):
     with open_session(filename) as session:
@@ -99,6 +113,9 @@ def save_to_file(qcm: Qcm, filename: str):
                         session.add(db_question)
                         session.flush()
 
+                    case _:
+                        raise ValueError(f"Unkown model question type {question.__class__.__name__}")
+
                 db_qcm.liste_questions.append(db_question)
 
                 if hasattr(db_question, "choix_bdd"):
@@ -114,6 +131,55 @@ def save_to_file(qcm: Qcm, filename: str):
         except Exception as e:
             logger.error(f"Failed to write to file because of {e.__class__.__name__} raised: {e}")
             raise e
+
+def read_from_file(filename="/tmp/bdd.dbq"):
+    with open_session(filename) as session:
+        try:
+            qcms = session.query(QcmDB).all()
+        except Exception as e:
+            logger.error(f"Failed to read from file because of {e.__class__.__name__} raised: {e}")
+            raise e
+
+        if len(qcms) != 1:
+            raise AttributeError(f"Expected exactly 1 qcm in the file, got {len(qcms)}")
+
+        db_qcm = qcms[0]
+        qcm = Qcm(titre=db_qcm.titre)
+
+        for db_question in db_qcm.liste_questions:
+            arguments = {
+                "enonce": db_question.enonce,
+                "points": db_question.points,
+                "obligatoire": db_question.obligatoire,
+            }
+
+            match db_question:
+                case QuestionQCUniqueDB():
+                    question = QuestionQCUnique(
+                        choix=db_question.choix_rep,
+                        index_bonne_reponse=db_question.id_bonne_reponse,
+                        **arguments,
+                    )
+
+                case QuestionQCMultiplesDB():
+                    question = QuestionQCMultiples(
+                        choix=db_question.choix_rep,
+                        index_bonnes_reponses=db_question.id_bonne_reponse,
+                        **arguments,
+                    )
+
+                case QuestionLibreDB():
+                    question = QuestionLibre(
+                        rep_attendue=db_question.rep_attendue,
+                        **arguments,
+                    )
+
+                case _:
+                    raise ValueError(f"Unkown db question type {db_question.__class__.__name__}")
+
+            qcm.liste_questions.append(question)
+
+        return qcm
 
 def print_tables(session):
     tables = inspect(session.bind).get_table_names()
