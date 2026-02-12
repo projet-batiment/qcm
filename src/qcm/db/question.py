@@ -36,7 +36,7 @@ class QuestionQCMultiplesDB(QuestionDB):
     choix_bdd = relationship(
         "Choix",
         order_by="Choix.id",
-        collection_class=ordering_list("id"),
+        # collection_class=ordering_list("id"),
         back_populates="question",
         cascade="all, delete-orphan",
     )

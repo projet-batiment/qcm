@@ -55,6 +55,7 @@ def save_to_file(qcm: Qcm, filename: str):
             logger.debug("Creating qcm object")
             db_qcm = QcmDB(qcm.titre)
             session.add(db_qcm)
+            session.flush()
 
             logger.debug("Populating qcm object")
             for question in qcm.liste_questions:
