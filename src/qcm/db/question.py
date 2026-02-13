@@ -4,7 +4,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relationship
 
-from qcm.model.bdd_init import Base
+from qcm.model.base import Base
 
 
 class QuestionDB(Base):

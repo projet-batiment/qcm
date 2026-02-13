@@ -27,7 +27,7 @@ def open_session(filename: str):
 
     extention = filename.split(".")[-1]
     if not extention == "dbq":
-        logger.warn(f"Expected .dbq extention, found '{extention}'")
+        logger.warning(f"Expected .dbq extention, found '{extention}'")
 
     engine = create_engine(
         f"sqlite:///{filename}",
