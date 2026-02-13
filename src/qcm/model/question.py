@@ -15,11 +15,11 @@ class QuestionQC(Question):
     choix: list[str] = field(default_factory=list)
 
     @abstractclassmethod
-    def swap_choix(self, index_a, index_b):
+    def swap_choix(cls, index_a, index_b):
         pass
 
     @abstractclassmethod
-    def delete_choix(self, index):
+    def delete_choix(cls, index):
         pass
 
 
@@ -47,6 +47,7 @@ class QuestionQCMultiples(QuestionQC):
         if index in self.index_bonnes_reponses:
             self.index_bonnes_reponses.remove(index)
 
+
 @dataclass
 class QuestionQCUnique(QuestionQC):
     NO_CHOICE_INDEX: ClassVar[int] = -1
@@ -70,6 +71,7 @@ class QuestionQCUnique(QuestionQC):
         self.choix.pop(index)
         if self.index_bonne_reponse == index:
             self.index_bonne_reponse = self.NO_CHOICE_INDEX
+
 
 @dataclass
 class QuestionLibre(Question):

@@ -6,6 +6,7 @@ from qcm.model.reponse import ReponseQCMultiples, ReponseQCUnique
 
 # noqa: F401 : Afin que Ruff ne se plaigne pas de l'import non utilisé.
 
+
 @pytest.mark.parametrize(
     "choix_utilisateur, resultat_attendu",
     [

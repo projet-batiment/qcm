@@ -78,7 +78,7 @@ class QuestionQCMultiplesUI(QuestionUI):
             )
 
             def move_down(i=i):
-                self.question.swap_choix(i, i+1)
+                self.question.swap_choix(i, i + 1)
                 self.update()
 
             btn_down = Button(each_frame, text=" 🠋 ", command=move_down)
@@ -87,7 +87,7 @@ class QuestionQCMultiplesUI(QuestionUI):
                 btn_down.config(state="disabled")
 
             def move_up(i=i):
-                self.question.swap_choix(i, i-1)
+                self.question.swap_choix(i, i - 1)
                 self.update()
 
             btn_up = Button(each_frame, text=" 🠉 ", command=move_up)

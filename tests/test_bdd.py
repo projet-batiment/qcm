@@ -1,9 +1,11 @@
 from tempfile import NamedTemporaryFile
+
 import pytest
 
 from qcm.control.db_manager import read_from_file, save_to_file
 from qcm.model.qcm import Qcm
 from qcm.model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
+
 
 @pytest.fixture
 def qcm_test():
@@ -26,9 +28,10 @@ def qcm_test():
                 enonce="Test de texte libre",
                 points=1,
                 rep_attendue="bien",
-            )
+            ),
         ],
     )
+
 
 def test_sauvegarde_puis_relecture(qcm_test):
     with NamedTemporaryFile(delete=True) as file:

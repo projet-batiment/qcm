@@ -73,7 +73,7 @@ class QuestionQCUniqueUI(QuestionUI):
             each_delete.pack(side=RIGHT)
 
             def move_down(i=i):
-                self.question.swap_choix(i, i+1)
+                self.question.swap_choix(i, i + 1)
                 self.update()
 
             each_move_down = Button(each_frame, text=" 🠋 ", command=move_down)
@@ -82,7 +82,7 @@ class QuestionQCUniqueUI(QuestionUI):
                 each_move_down.config(state="disabled")
 
             def move_up(i=i):
-                self.question.swap_choix(i, i-1)
+                self.question.swap_choix(i, i - 1)
                 self.update()
 
             each_move_up = Button(each_frame, text=" 🠉 ", command=move_up)

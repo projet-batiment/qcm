@@ -1,25 +1,33 @@
+from contextlib import contextmanager
+from logging import getLogger
+
 from sqlalchemy import create_engine, inspect, text
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 
-from contextlib import contextmanager
+from qcm.db.qcm import Base, QcmDB
+from qcm.db.question import (
+    QuestionLibreDB,
+    QuestionQCMultiplesDB,
+    QuestionQCUniqueDB,
+)
+from qcm.model.qcm import Qcm
+from qcm.model.question import (
+    QuestionLibre,
+    QuestionQCMultiples,
+    QuestionQCUnique,
+)
 
-import logging
+logger = getLogger(__name__)
 
-from qcm.db.bdd_init import Base
-
-from qcm.model.qcm import *
-from qcm.model.question import *
-from qcm.model.reponse import *
-from qcm.db.qcm import *
-from qcm.db.question import *
-from qcm.db.reponse import *
-
-logger = logging.getLogger(__name__)
 
 @contextmanager
 def open_session(filename: str):
     logger.debug(f"Ouverture du fichier '{filename}'")
+
+    extention = filename.split(".")[-1]
+    if not extention == "dbq":
+        logger.warn(f"Expected .dbq extention, found '{extention}'")
 
     engine = create_engine(
         f"sqlite:///{filename}",
@@ -54,6 +62,7 @@ def open_session(filename: str):
         session.close()
         engine.dispose()
         logger.info("Session has been closed.")
+
 
 def save_to_file(qcm: Qcm, filename: str):
     with open_session(filename) as session:
@@ -108,7 +117,9 @@ def save_to_file(qcm: Qcm, filename: str):
                         session.flush()
 
                     case _:
-                        raise ValueError(f"Unkown model question type {question.__class__.__name__}")
+                        raise ValueError(
+                            f"Unkown model question type{question.__class__.__name__}"
+                        )
 
                 db_qcm.liste_questions.append(db_question)
 
@@ -125,17 +136,22 @@ def save_to_file(qcm: Qcm, filename: str):
 
             logger.info("Finished writing to file!")
         except Exception as e:
-            logger.error(f"Failed to write to file because of {e.__class__.__name__} raised: {e}")
+            logger.error(
+                f"Failed to write to file because of{e.__class__.__name__} raised: {e}"
+            )
             raise e
 
-def read_from_file(filename="/tmp/bdd.dbq"):
+
+def read_from_file(filename: str):
     with open_session(filename) as session:
         log_tables(session)
 
         try:
             qcms = session.query(QcmDB).all()
         except Exception as e:
-            logger.error(f"Failed to read from file because of {e.__class__.__name__} raised: {e}")
+            logger.error(
+                f"Failed to read from file because of{e.__class__.__name__} raised: {e}"
+            )
             raise e
 
         if len(qcms) != 1:
@@ -173,11 +189,14 @@ def read_from_file(filename="/tmp/bdd.dbq"):
                     )
 
                 case _:
-                    raise ValueError(f"Unkown db question type {db_question.__class__.__name__}")
+                    raise ValueError(
+                        f"Unkown db question type{db_question.__class__.__name__}"
+                    )
 
             qcm.liste_questions.append(question)
 
         return qcm
+
 
 def log_tables(session):
     tables = inspect(session.bind).get_table_names()
@@ -188,17 +207,3 @@ def log_tables(session):
         rows = session.execute(text(f"SELECT * FROM {table}")).mappings().all()
         for row in rows:
             logger.debug("   " + str(dict(row)))
-
-def temp_test(filename="/tmp/bdd.dbq"):
-    qcm = Qcm(
-        liste_questions=[
-            QuestionLibre(),
-            QuestionQCUnique(choix=["1", "2"]),
-            QuestionQCMultiples(choix=["3", "4", "5"], index_bonnes_reponses={0, 1}),
-        ]
-    )
-
-    logging.basicConfig(level=logging.DEBUG)
-    logging.debug(f"{qcm = }")
-
-    save_to_file(qcm, filename)

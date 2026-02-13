@@ -2,9 +2,7 @@ from typing import List
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm.session import Session
 
 from qcm.model.bdd_init import Base
 
@@ -29,6 +27,7 @@ class QuestionDB(Base):
         self.enonce = enonce
         self.points = points
         self.obligatoire = obligatoire
+
 
 class QuestionQCMultiplesDB(QuestionDB):
     __tablename__ = "questions_qcm"
@@ -105,9 +104,7 @@ class QuestionQCUniqueDB(QuestionQCMultiplesDB):
         """
         :param id_bonne_reponse: Un ENTIER de l'indice correct
         """
-        super().__init__(
-            id_bonne_reponse=None, **kwargs
-        )
+        super().__init__(id_bonne_reponse=None, **kwargs)
         # On transforme l'int unique en liste pour le stockage parent
         if id_bonne_reponse >= 0:
             self.id_bonne_reponse = id_bonne_reponse
@@ -138,9 +135,7 @@ class QuestionLibreDB(QuestionDB):
     rep_attendue = Column(String)
     __mapper_args__ = {"polymorphic_identity": "libre"}
 
-    def __init__(
-        self, rep_attendue: str, **kwargs
-    ):
+    def __init__(self, rep_attendue: str, **kwargs):
         super().__init__(**kwargs)
         self.rep_attendue = rep_attendue
 
