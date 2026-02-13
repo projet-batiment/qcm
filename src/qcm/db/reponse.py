@@ -41,7 +41,7 @@ class ReponseQCMultiplesDB(ReponseDB):
         return proposition_utilisateur in qcm.id_bonne_reponse
 
 
-class ReponseQCUnique(ReponseDB):
+class ReponseQCUniqueDB(ReponseDB):
     def __init__(self, question_qcunique: QuestionQCUnique):
         super().__init__(question_qcunique)
 
@@ -50,7 +50,7 @@ class ReponseQCUnique(ReponseDB):
         return proposition_utilisateur == qcu.id_bonne_reponse
 
 
-class ReponseLibre(ReponseDB):
+class ReponseLibreDB(ReponseDB):
     def __init__(self, question_libre: QuestionLibre):
         super().__init__(question_libre)
 
