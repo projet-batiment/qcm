@@ -14,7 +14,7 @@ class Reponse(ABC):
     question: Question
 
     @abstractmethod
-    def verifier(self):
+    def verifier(self) -> bool:
         pass
 
 
@@ -23,8 +23,8 @@ class ReponseQCUnique(Reponse):
     question: QuestionQCUnique
     reponse_choisie: int = QuestionQCUnique.NO_CHOICE_INDEX
 
-    def verifier(self):
-        self.question.index_bonne_reponse == self.reponse_choisie
+    def verifier(self) -> bool:
+        return self.question.index_bonne_reponse == self.reponse_choisie
 
 
 @dataclass
@@ -32,8 +32,8 @@ class ReponseQCMultiples(Reponse):
     question: QuestionQCMultiples
     reponses_choisies: set[int] = field(default_factory=set)
 
-    def verifier(self):
-        self.question.index_bonnes_reponses == self.reponses_choisies
+    def verifier(self) -> bool:
+        return self.question.index_bonnes_reponses == self.reponses_choisies
 
 
 @dataclass
