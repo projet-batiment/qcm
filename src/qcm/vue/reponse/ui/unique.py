@@ -3,12 +3,24 @@ from tkinter import LEFT, TOP
 from ttkbootstrap import Frame, IntVar, Label, Radiobutton
 
 from qcm.model.question import QuestionQCUnique
+from qcm.vue.parent import Parent
 
 from .ui import ReponseUI
 
 
 class ReponseQCUniqueUI(ReponseUI):
+    """
+    Conteneur de l'interface graphique pour éditer une ReponseQCUnique
+    du model.
+    """
+
     def __init__(self, parent, question: QuestionQCUnique, *args, **kwargs):
+        """
+        Args:
+            parent (Parent): conteneur parent
+            question (QuestionQCUnique): la question du model à laquelle répondre
+        """
+
         super().__init__(parent, question, *args, **kwargs)
 
         self.question = question
@@ -22,6 +34,13 @@ class ReponseQCUniqueUI(ReponseUI):
         self.update()
 
     def update(self):
+        """
+        Met à jour la vue selon les données en mémoire.
+
+        Fonctionnement: supprime tous les éléments graphiques puis
+        les recrée avec les nouvelles valeurs.
+        """
+
         for each_old_ui in self.choix_ui:
             each_old_ui.pack_forget()
 

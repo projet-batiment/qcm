@@ -3,14 +3,30 @@ from tkinter import BOTTOM, LEFT, RIGHT, TOP
 from ttkbootstrap import Button, Entry, Frame, IntVar, Radiobutton, StringVar
 
 from qcm.model.question import QuestionQCUnique
+from qcm.vue.parent import Parent
 
 from .ui import QuestionUI
 
 
 class QuestionQCUniqueUI(QuestionUI):
+    """
+    Conteneur de l'interface graphique pour éditer une QuestionQCUnique
+    du model.
+
+    Attributes:
+        question_type (str):
+            Nom de ce type de question dans l'interface graphique.
+    """
+
     question_type = "Choix unique"
 
-    def __init__(self, parent, question: QuestionQCUnique, *args, **kwargs):
+    def __init__(self, parent: Parent, question: QuestionQCUnique, *args, **kwargs):
+        """
+        Args:
+            parent (Parent): conteneur parent
+            question (QuestionQCUnique): la question du model à éditer
+        """
+
         super().__init__(parent, question=question, *args, **kwargs)
 
         self.container = Frame(self.milieu)
@@ -37,6 +53,13 @@ class QuestionQCUniqueUI(QuestionUI):
         self.update()
 
     def update(self):
+        """
+        Met à jour la vue selon les données en mémoire.
+
+        Fonctionnement: supprime tous les éléments graphiques puis
+        les recrée avec les nouvelles valeurs.
+        """
+
         for each_old_ui in self.choix_ui:
             each_old_ui.pack_forget()
 
@@ -93,4 +116,5 @@ class QuestionQCUniqueUI(QuestionUI):
             self.choix_ui.append(each_frame)
 
 
+# ajouter cette implémentation à la liste de la classe mère
 QuestionUI.implementations.append(QuestionQCUniqueUI)
