@@ -50,7 +50,7 @@ def open_session(filename: str):
         raise e
 
     finally:
-        logger.info("Closing connection")
+        logger.debug("Closing connection")
         session.close()
         engine.dispose()
         logger.info("Session has been closed.")
@@ -73,8 +73,6 @@ def save_to_file(qcm: Qcm, filename: str):
 
             logger.debug("Populating qcm object")
             for question in qcm.liste_questions:
-                print_tables(session)
-
                 arguments = {
                     "enonce": question.enonce,
                     "points": question.points,
@@ -87,7 +85,6 @@ def save_to_file(qcm: Qcm, filename: str):
                         db_question = QuestionQCUniqueDB(**arguments)
                         session.add(db_question)
                         session.flush()
-                        print_tables(session)
 
                         db_question.choix_rep = question.choix
                         db_question.id_bonne_reponse = question.index_bonne_reponse
@@ -97,13 +94,10 @@ def save_to_file(qcm: Qcm, filename: str):
                         db_question = QuestionQCMultiplesDB(**arguments)
                         session.add(db_question)
                         session.flush()
-                        print_tables(session)
 
                         db_question.choix_rep = question.choix
                         db_question.id_bonne_reponse = question.index_bonnes_reponses
-                        print_tables(session)
                         session.flush()
-                        print_tables(session)
 
                     case QuestionLibre():
                         db_question = QuestionLibreDB(
@@ -124,6 +118,8 @@ def save_to_file(qcm: Qcm, filename: str):
 
                 session.flush()
 
+            log_tables(session)
+
             logger.debug("Writing data to the file")
             session.commit()
 
@@ -134,6 +130,8 @@ def save_to_file(qcm: Qcm, filename: str):
 
 def read_from_file(filename="/tmp/bdd.dbq"):
     with open_session(filename) as session:
+        log_tables(session)
+
         try:
             qcms = session.query(QcmDB).all()
         except Exception as e:
@@ -181,14 +179,15 @@ def read_from_file(filename="/tmp/bdd.dbq"):
 
         return qcm
 
-def print_tables(session):
+def log_tables(session):
     tables = inspect(session.bind).get_table_names()
-    print("=== TABLES ===")
+
+    logger.debug("Session contents:")
     for table in tables:
-        print(f" {table=}")
+        logger.debug(f" - table '{table}'")
         rows = session.execute(text(f"SELECT * FROM {table}")).mappings().all()
         for row in rows:
-            print(" > ", dict(row))
+            logger.debug("   " + str(dict(row)))
 
 def temp_test(filename="/tmp/bdd.dbq"):
     qcm = Qcm(
