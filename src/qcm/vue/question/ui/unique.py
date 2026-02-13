@@ -21,12 +21,12 @@ class QuestionQCUniqueUI(QuestionUI):
         self.vars = []
 
         def choix_var_changed(*args):
-            self.question.id_bonne_reponse = self.choix_var.get()
+            self.question.index_bonne_reponse = self.choix_var.get()
 
         self.choix_var.trace_add("write", choix_var_changed)
 
         def add():
-            self.question.choix_rep.append("Nouveau choix")
+            self.question.choix.append("Nouveau choix")
             self.update()
 
         add_button_container = Frame(self.container)
@@ -43,9 +43,9 @@ class QuestionQCUniqueUI(QuestionUI):
         self.choix_ui = []
         self.vars = []
 
-        self.choix_var.set(self.question.id_bonne_reponse)
+        self.choix_var.set(self.question.index_bonne_reponse)
 
-        for i, each_choix in enumerate(self.question.choix_rep):
+        for i, each_choix in enumerate(self.question.choix):
             each_frame = Frame(self.container)
             each_frame.pack(side=TOP, fill="x", expand=True)
 
@@ -55,7 +55,7 @@ class QuestionQCUniqueUI(QuestionUI):
             each_var = StringVar(value=each_choix)
 
             def entry_text_updated(*args, i=i, each_var=each_var):
-                self.question.choix_rep[i] = each_var.get()
+                self.question.choix[i] = each_var.get()
 
             each_var.trace_add("write", entry_text_updated)
             self.vars.append(each_var)
@@ -64,7 +64,7 @@ class QuestionQCUniqueUI(QuestionUI):
             each_entry.pack(side=LEFT)
 
             def delete(i=i):
-                self.question.choix_bdd.pop(i)
+                self.question.delete_choix(i)
                 self.update()
 
             each_delete = Button(
@@ -73,16 +73,16 @@ class QuestionQCUniqueUI(QuestionUI):
             each_delete.pack(side=RIGHT)
 
             def move_down(i=i):
-                self.question.choix_bdd.insert(i + 1, self.question.choix_bdd.pop(i))
+                self.question.swap_choix(i, i+1)
                 self.update()
 
             each_move_down = Button(each_frame, text=" 🠋 ", command=move_down)
             each_move_down.pack(side=RIGHT)
-            if i + 1 == len(self.question.choix_bdd):
+            if i + 1 == len(self.question.choix):
                 each_move_down.config(state="disabled")
 
             def move_up(i=i):
-                self.question.choix_bdd.insert(i - 1, self.question.choix_bdd.pop(i))
+                self.question.swap_choix(i, i-1)
                 self.update()
 
             each_move_up = Button(each_frame, text=" 🠉 ", command=move_up)

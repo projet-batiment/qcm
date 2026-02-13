@@ -15,23 +15,23 @@ class Main:
         self.window.geometry("900x700")
 
         qcm = Qcm(titre="QCM de test")
-        qcm.ajouter_question(
+        qcm.liste_questions.append(
             QuestionQCUnique(
                 enonce="Ceci est un test",
                 points=3,
-                choix_rep=["hello", "world"],
-                id_bonne_reponse=0,
+                choix=["hello", "world"],
+                index_bonne_reponse=0,
             )
         )
-        qcm.ajouter_question(
+        qcm.liste_questions.append(
             QuestionQCMultiples(
                 enonce="Ceci est un test",
                 points=3,
-                choix_rep=["hello", "world", "Faux"],
-                id_bonne_reponse=[0, 1],
+                choix=["hello", "world", "Faux"],
+                index_bonnes_reponses=[0, 1],
             )
         )
-        qcm.ajouter_question(
+        qcm.liste_questions.append(
             QuestionLibre(enonce="Ceci est un test", points=1, rep_attendue="bien")
         )
 
