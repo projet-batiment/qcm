@@ -3,7 +3,6 @@ from tkinter import LEFT, TOP
 from ttkbootstrap import Frame, IntVar, Label, Radiobutton
 
 from qcm.model.question import QuestionQCUnique
-from qcm.vue.parent import Parent
 
 from .ui import ReponseUI
 

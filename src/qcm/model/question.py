@@ -60,7 +60,8 @@ class QuestionQCMultiples(QuestionQC):
     Question à choix multiples (plusieurs choix bons possibles).
 
     Attributes:
-        index_bonnes_reponses (set[int]): liste les indices des propositions de choix correctes
+        index_bonnes_reponses (set[int]): liste les indices des
+        propositions de choix correctes
     """
 
     index_bonnes_reponses: set[int] = field(default_factory=set)

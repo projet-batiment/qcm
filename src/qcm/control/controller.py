@@ -1,4 +1,5 @@
 from logging import info
+
 from ttkbootstrap import Frame, Window
 
 from qcm.control import AppState

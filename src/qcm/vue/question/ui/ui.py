@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import Callable
 
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
+from typing import Callable
 
 from ttkbootstrap import (
     BooleanVar,

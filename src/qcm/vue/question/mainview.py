@@ -49,7 +49,9 @@ class MainView(Frame):
             style="info",
         )
 
-    def _editeur_callback(self, command: CallbackCommand, question_ui: QuestionUI) -> None:
+    def _editeur_callback(
+        self, command: CallbackCommand, question_ui: QuestionUI
+    ) -> None:
         """
         Fonction de rappel depuis un élément subordonné.
         Permet d'exécuter une série d'actions associées à une commande,

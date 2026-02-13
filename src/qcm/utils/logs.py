@@ -1,6 +1,6 @@
 import logging
-
 from typing import Union
+
 LogLevel = Union[int, str]
 
 logger = logging.getLogger(__name__)
@@ -32,4 +32,7 @@ def setup_logging(level: LogLevel = logging.INFO) -> None:
             case _:
                 suffix = "th"
 
-        logging.warning(f"setup_logging should only be called once (this is the {call_counter}{suffix} call)")
+        logging.warning(
+            f"setup_logging should only be called once"
+            f"(this is the {call_counter}{suffix} call)"
+        )

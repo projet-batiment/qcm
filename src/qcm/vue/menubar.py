@@ -6,6 +6,7 @@ from qcm.vue.parent import Parent
 if TYPE_CHECKING:
     from qcm.control.controller import Control
 
+
 class MenuBar(Menu):
     """
     Implémentation de la barre de menu (en haut de l'interface)

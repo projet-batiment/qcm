@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
+import logging
+
 from ttkbootstrap import Window
 
 from qcm.control.controller import Control
 from qcm.utils.logs import setup_logging
 
-import logging
 logger = logging.getLogger(__name__)
 
 

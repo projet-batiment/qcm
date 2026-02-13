@@ -3,7 +3,6 @@ from tkinter import BOTTOM, LEFT, RIGHT, TOP
 from ttkbootstrap import Frame, Label
 
 from qcm.model.question import Question
-from qcm.vue.parent import Parent
 
 
 class ReponseUI(Frame):

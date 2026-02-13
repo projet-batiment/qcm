@@ -20,18 +20,14 @@ class QuestionQCMultiplesUI(QuestionUI):
 
     question_type = "Choix multiples"
 
-    def __init__(
-            self, parent: Parent, question: QuestionQCMultiples, *args, **kwargs
-    ):
+    def __init__(self, parent: Parent, question: QuestionQCMultiples, *args, **kwargs):
         """
         Args:
             parent (Parent): conteneur parent
             question (QuestionQCMultiples): la question du model à éditer
         """
 
-        super().__init__(
-            parent, question=question, *args, **kwargs
-        )
+        super().__init__(parent, question=question, *args, **kwargs)
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)

@@ -1,11 +1,10 @@
 from contextlib import contextmanager
 from logging import getLogger
-
 from typing import ContextManager
 
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session, sessionmaker
 
 from qcm.db.qcm import Base, QcmDB
 from qcm.db.question import (
@@ -182,7 +181,8 @@ def read_from_file(filename: str) -> Qcm:
         Qcm: le qcm (rempli) lu dans le fichier
 
     Raises:
-        AttributeError: cohérence de la base de données (ne doit contenir qu'un seul Qcm)
+        AttributeError: cohérence de la base de données
+                        (ne doit contenir qu'un seul Qcm)
         Exception (transmission d'exceptions non gérées)
     """
 
