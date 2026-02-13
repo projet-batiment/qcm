@@ -53,7 +53,7 @@ python -m qcm.main
 ```
 
 ## Auteurs :
-- Boré Erwan
-- Eich Aurélien
-- Poletti Elio
-- Régent Gaspard
+- Boré Erwan (@bowan71)
+- Eich Aurélien (@aeich7)
+- Poletti Elio (@LPe7)
+- Régent Gaspard (@Gaspard-R)
