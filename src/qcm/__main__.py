@@ -3,44 +3,24 @@
 from ttkbootstrap import Window
 
 from qcm.control.controller import Control
-from qcm.model.qcm import Qcm
-from qcm.model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
 from qcm.utils.logs import setup_logging
 
-
-class Main:
-    def __init__(self):
-        self.window = Window(themename="flatly")
-        self.window.title("QCM LPORM")
-        self.window.geometry("900x700")
-
-        qcm = Qcm(titre="QCM de test")
-        qcm.liste_questions.append(
-            QuestionQCUnique(
-                enonce="Ceci est un test",
-                points=3,
-                choix=["hello", "world"],
-                index_bonne_reponse=0,
-            )
-        )
-        qcm.liste_questions.append(
-            QuestionQCMultiples(
-                enonce="Ceci est un test",
-                points=3,
-                choix=["hello", "world", "Faux"],
-                index_bonnes_reponses=[0, 1],
-            )
-        )
-        qcm.liste_questions.append(
-            QuestionLibre(enonce="Ceci est un test", points=1, rep_attendue="bien")
-        )
-
-        Control(self.window)
-
-    def main(self):
-        self.window.mainloop()
+import logging
+logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":
-    setup_logging()
-    Main().main()
+    setup_logging(logging.DEBUG)
+    logger.debug("Launching the application")
+
+    window = Window(themename="flatly")
+    window.title("QCM LPORM")
+    window.geometry("900x700")
+
+    logger.debug("Setting up the controller")
+    Control(window)
+
+    logger.debug("Starting main loop")
+    window.mainloop()
+
+    logger.debug("The main loop has stopped. Shutting down now.")
