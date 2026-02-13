@@ -6,39 +6,41 @@ from qcm.model.reponse import ReponseQCMultiples, ReponseQCUnique
 
 # noqa: F401 : Afin que Ruff ne se plaigne pas de l'import non utilisé.
 
-
-def test_qcm_unique_verification():
+@pytest.mark.parametrize(
+    "choix_utilisateur, resultat_attendu",
+    [
+        (0, True),
+        (1, False),
+    ],
+)
+def test_qcm_unique_verification(choix_utilisateur, resultat_attendu):
     """Vérifie qu'un QCM unique valide uniquement le bon index."""
-    q = QuestionQCUnique(
-        enonce="Capitale ?",
-        points=1,
-        choix_rep=["Paris", "Lyon"],
-        id_bonne_reponse=0,
-        obligatoire=True,
+    reponse = ReponseQCUnique(
+        question=QuestionQCUnique(
+            choix=["Paris", "Lyon"],
+            index_bonne_reponse=0,
+        ),
+        reponse_choisie=choix_utilisateur,
     )
-    verif = ReponseQCUnique(q)
 
-    assert verif.verifier(0) is True
-    assert verif.verifier(1) is False
+    assert reponse.verifier() is resultat_attendu
 
 
 @pytest.mark.parametrize(
     "choix_utilisateur, resultat_attendu",
     [
-        (0, True),
-        (2, True),
-        (1, False),
+        ([0, 2], True),
+        ([0], False),
+        ([0, 1], False),
     ],
 )
 def test_qcm_multiple_verification(choix_utilisateur, resultat_attendu):
-    """Vérifie la logique pour les QCM à réponses multiples."""
-    q = QuestionQCMultiples(
-        enonce="Fruits rouges ?",
-        points=1,
-        choix_rep=["Fraise", "Banane", "Cerise"],
-        id_bonne_reponse=[0, 2],  # Fraise et Cerise
-        obligatoire=True,
+    reponse = ReponseQCMultiples(
+        question=QuestionQCMultiples(
+            choix=["Fraise", "Banane", "Cerise"],
+            index_bonnes_reponses=[0, 2],  # Fraise et Cerise
+        ),
+        reponses_choisies=choix_utilisateur,
     )
-    verif = ReponseQCMultiples(q)
 
-    assert verif.verifier(choix_utilisateur) is resultat_attendu
+    assert reponse.verifier() is resultat_attendu
