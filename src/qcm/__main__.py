@@ -11,6 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 if __name__ == "__main__":
+    """
+    Routine principale du programme. Met en place :
+      - Le logger
+      - La racine de la GUI (window)
+      - Le controller
+    Et lance la boucle d'exécution.
+    """
+
     setup_logging(logging.DEBUG)
     logger.debug("Launching the application")
 
