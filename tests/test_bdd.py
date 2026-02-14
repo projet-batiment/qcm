@@ -1,15 +1,12 @@
 from tempfile import NamedTemporaryFile
 
-from dataclasses import dataclass, field
-
 import pytest
 
 from qcm.control.db_manager import read_from_file, save_to_file
-from qcm.model.qcm import Qcm
-from qcm.model.tentative import Tentative
 from qcm.model.data import QcmData
+from qcm.model.qcm import Qcm
 from qcm.model.question import QuestionLibre, QuestionQCMultiples, QuestionQCUnique
-from qcm.model.reponse import ReponseLibre, ReponseQCMultiples, ReponseQCUnique
+from qcm.model.tentative import Tentative
 
 
 @pytest.fixture
@@ -73,13 +70,17 @@ def data() -> QcmData:
 
     juste = Tentative(qcm)
     juste.liste_reponses[0].reponse_choisie = qcm.liste_questions[0].index_bonne_reponse
-    juste.liste_reponses[1].reponses_choisies = qcm.liste_questions[1].index_bonnes_reponses
+    juste.liste_reponses[1].reponses_choisies = qcm.liste_questions[
+        1
+    ].index_bonnes_reponses
     juste.liste_reponses[2].reponses_choisies = qcm.liste_questions[2].rep_attendue
     tentatives.append(juste)
 
     moyen = Tentative(qcm)
     moyen.liste_reponses[0].reponse_choisie = erronee.liste_reponses[0].reponse_choisie
-    moyen.liste_reponses[1].reponses_choisies = qcm.liste_questions[1].index_bonnes_reponses
+    moyen.liste_reponses[1].reponses_choisies = qcm.liste_questions[
+        1
+    ].index_bonnes_reponses
     moyen.liste_reponses[2].reponses_choisies = qcm.liste_questions[2].rep_attendue
     tentatives.append(moyen)
 

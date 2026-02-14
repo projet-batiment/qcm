@@ -1,18 +1,18 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from typing import Optional
+
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relationship
 
-from typing import Optional
-
-from qcm.db.tentative import TentativeDB
 from qcm.db.question import (
     QuestionDB,
     QuestionLibreDB,
     QuestionQCMultiplesDB,
     QuestionQCUniqueDB,
 )
-
+from qcm.db.tentative import TentativeDB
 from qcm.model.base import Base
+
 
 class ReponseDB(Base):
     __tablename__ = "reponses"
@@ -34,6 +34,7 @@ class ReponseDB(Base):
         self.question = question
         self.tentative = tentative
 
+
 class ReponseQCMultiplesDB(ReponseDB):
     __tablename__ = "reponses_qcm"
     id = Column(Integer, ForeignKey("reponses.id"), primary_key=True)
@@ -52,13 +53,16 @@ class ReponseQCMultiplesDB(ReponseDB):
 
     __mapper_args__ = {"polymorphic_identity": "qcm_multiple"}
 
-    def __init__(self, question: QuestionQCMultiplesDB, choix: set[int], **kwargs) -> None:
+    def __init__(
+        self, question: QuestionQCMultiplesDB, choix: set[int], **kwargs
+    ) -> None:
         self.choix_bdd = [ChoixReponse(x) for x in choix]
         super().__init__(question, **kwargs)
 
     @property
     def choix(self):
         return set(self.choix_choix)
+
 
 class ReponseQCUniqueDB(ReponseQCMultiplesDB):
     __mapper_args__ = {"polymorphic_identity": "qcm_unique"}
@@ -69,6 +73,7 @@ class ReponseQCUniqueDB(ReponseQCMultiplesDB):
     def get_choix(self) -> Optional[int]:
         return next(iter(self.choix), None)
 
+
 class ReponseLibreDB(ReponseDB):
     __tablename__ = "reponses_libre"
     id = Column(Integer, ForeignKey("reponses.id"), primary_key=True)
@@ -78,6 +83,7 @@ class ReponseLibreDB(ReponseDB):
     def __init__(self, question: QuestionLibreDB, reponse: str, **kwargs):
         super().__init__(question, **kwargs)
         self.reponse = reponse
+
 
 class ChoixReponse(Base):
     __tablename__ = "choix_reponse"

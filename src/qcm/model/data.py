@@ -1,7 +1,8 @@
+from dataclasses import dataclass, field
+
 from qcm.model.qcm import Qcm
 from qcm.model.tentative import Tentative
 
-from dataclasses import dataclass, field
 
 @dataclass
 class QcmData:

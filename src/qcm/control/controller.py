@@ -1,13 +1,13 @@
 import logging
 from tkinter import filedialog, messagebox
-from ttkbootstrap import Frame, Window
-
 from typing import Optional
+
+from ttkbootstrap import Frame, Window
 
 from qcm.control.appstate import AppState
 from qcm.control.db_manager import read_from_file, save_to_file
-from qcm.model.qcm import Qcm
 from qcm.model.data import QcmData
+from qcm.model.qcm import Qcm
 from qcm.model.tentative import Tentative
 from qcm.vue import MenuBar, question, reponse, splashscreen
 
@@ -43,9 +43,11 @@ class Control:
         self.menubar = MenuBar(window, self)
         window.config(menu=self.menubar)
 
-        self.qcm: Optional[Qcm] = None              # qcm affiché dans l'interface
-        self.tentative: Optional[Tentative] = None  # tentative affichée dans l'interface
-        self.filename: Optional[str] = None         # fichier de sauvegarde du qcm
+        self.qcm: Optional[Qcm] = None  # qcm affiché dans l'interface
+        self.tentative: Optional[Tentative] = (
+            None  # tentative affichée dans l'interface
+        )
+        self.filename: Optional[str] = None  # fichier de sauvegarde du qcm
 
     @property
     def qcm(self) -> Optional[Qcm]:
@@ -84,9 +86,11 @@ class Control:
             if self.qcm != tentative.qcm:
                 # Les étapes précédentes du controller assurent
                 #   que self.qcm == tentative.qcm
-                raise ValueError(f"Expected self.qcm to already be set"
-                                 f" to tentative.qcm: '{self.qcm.titre}'"
-                                 f" != '{tentative.qcm.titre}'")
+                raise ValueError(
+                    f"Expected self.qcm to already be set"
+                    f" to tentative.qcm: '{self.qcm.titre}'"
+                    f" != '{tentative.qcm.titre}'"
+                )
 
             logger.debug(f"Setting tentative to '{tentative.nom}'")
             # TODO: menubar.has_tentative
@@ -106,7 +110,9 @@ class Control:
             Optional[AppState]:
                 L'état ou None s'il n'est pas trouvé dans la liste des états
         """
-        return next((k for k, v in self.states.items() if v == self.__current_state), None)
+        return next(
+            (k for k, v in self.states.items() if v == self.__current_state), None
+        )
 
     @appstate.setter
     def appstate(self, appstate: AppState) -> None:
@@ -282,8 +288,8 @@ class Control:
         answer = messagebox.askyesnocancel(
             title="Confirmation",
             message="Voulez-vous enregistrer le qcm avant la fermeture ? "
-                    "Les modifications non-sauvegardées "
-                    "pourraient être perdues.",
+            "Les modifications non-sauvegardées "
+            "pourraient être perdues.",
         )
 
         match answer:

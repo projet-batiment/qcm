@@ -2,34 +2,33 @@ from logging import getLogger
 
 from sqlalchemy.orm import Session
 
-from qcm.db.qcm import Base, QcmDB
+from qcm.db.qcm import QcmDB
 from qcm.db.question import (
     QuestionLibreDB,
     QuestionQCMultiplesDB,
     QuestionQCUniqueDB,
 )
-from qcm.db.tentative import TentativeDB
 from qcm.db.reponse import (
-    ReponseDB,
     ReponseLibreDB,
     ReponseQCMultiplesDB,
     ReponseQCUniqueDB,
 )
-
+from qcm.db.tentative import TentativeDB
 from qcm.model.qcm import Qcm
 from qcm.model.question import (
     QuestionLibre,
     QuestionQCMultiples,
     QuestionQCUnique,
 )
-from qcm.model.tentative import Tentative
 from qcm.model.reponse import (
     ReponseLibre,
     ReponseQCMultiples,
     ReponseQCUnique,
 )
+from qcm.model.tentative import Tentative
 
 logger = getLogger(__name__)
+
 
 def convert_qcm(session: Session, qcm: Qcm) -> QcmDB:
     logger.debug("Creating qcm object")
@@ -75,8 +74,7 @@ def convert_qcm(session: Session, qcm: Qcm) -> QcmDB:
 
             case _:
                 raise ValueError(
-                    f"Unkown model question type"
-                    f" {question.__class__.__name__}"
+                    f"Unkown model question type {question.__class__.__name__}"
                 )
 
         db_qcm.liste_questions.append(db_question)
@@ -90,7 +88,10 @@ def convert_qcm(session: Session, qcm: Qcm) -> QcmDB:
 
     return db_qcm
 
-def convert_tentative(session: Session, tentative: Tentative, expected_db_qcm: QcmDB) -> TentativeDB:
+
+def convert_tentative(
+    session: Session, tentative: Tentative, expected_db_qcm: QcmDB
+) -> TentativeDB:
     logger.debug("Creating tentative object")
     db_tentative = TentativeDB(tentative.nom)
     session.add(db_tentative)
@@ -137,8 +138,7 @@ def convert_tentative(session: Session, tentative: Tentative, expected_db_qcm: Q
 
             case _:
                 raise ValueError(
-                    f"Unkown model question type"
-                    f" {reponse.__class__.__name__}"
+                    f"Unkown model question type {reponse.__class__.__name__}"
                 )
 
         db_tentative.liste_reponses.append(db_reponse)

@@ -6,6 +6,7 @@ from qcm.vue.parent import Parent
 if TYPE_CHECKING:
     from qcm.control.controller import Control
 
+
 class MenuBar(Menu):
     """
     Implémentation de la barre de menu (en haut de l'interface)
@@ -42,9 +43,13 @@ class MenuBar(Menu):
         self.add_cascade(label="Tentative", menu=self.tentative)
 
         self.tentative.add_command(label=self.START, command=controller.start_tentative)
-        self.tentative.add_command(label=self.VERIFY, command=controller.verifier_tentative)
+        self.tentative.add_command(
+            label=self.VERIFY, command=controller.verifier_tentative
+        )
         self.tentative.add_command(label=self.SAVE, command=controller.save_tentative)
-        self.tentative.add_command(label=self.SAVE_AS, command=controller.save_tentative_as)
+        self.tentative.add_command(
+            label=self.SAVE_AS, command=controller.save_tentative_as
+        )
         self.tentative.add_command(label=self.CLOSE, command=controller.close_tentative)
 
     def has_tentative(self, has_tentative: bool):

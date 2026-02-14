@@ -1,21 +1,17 @@
 from logging import getLogger
 
-from sqlalchemy.orm import Session
-
-from qcm.db.qcm import Base, QcmDB
+from qcm.db.qcm import QcmDB
 from qcm.db.question import (
     QuestionLibreDB,
     QuestionQCMultiplesDB,
     QuestionQCUniqueDB,
 )
-from qcm.db.tentative import TentativeDB
 from qcm.db.reponse import (
-    ReponseDB,
     ReponseLibreDB,
     ReponseQCMultiplesDB,
     ReponseQCUniqueDB,
 )
-
+from qcm.db.tentative import TentativeDB
 from qcm.model.qcm import Qcm
 from qcm.model.question import (
     QuestionLibre,
@@ -23,13 +19,9 @@ from qcm.model.question import (
     QuestionQCUnique,
 )
 from qcm.model.tentative import Tentative
-from qcm.model.reponse import (
-    ReponseLibre,
-    ReponseQCMultiples,
-    ReponseQCUnique,
-)
 
 logger = getLogger(__name__)
+
 
 def convert_qcm(db_qcm: QcmDB) -> Qcm:
     qcm = Qcm(titre=db_qcm.titre)
@@ -70,6 +62,7 @@ def convert_qcm(db_qcm: QcmDB) -> Qcm:
         qcm.liste_questions.append(question)
 
     return qcm
+
 
 def convert_tentative(db_tentative: TentativeDB, expected_qcm: Qcm) -> Tentative:
     # NOTE: all tentatives should have the same qcm

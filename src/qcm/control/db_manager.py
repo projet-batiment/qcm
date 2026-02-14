@@ -2,17 +2,17 @@ from contextlib import contextmanager
 from logging import getLogger
 from typing import ContextManager
 
-from qcm.control.db import model2db, db2model
-
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
 
+from qcm.control.db import db2model, model2db
 from qcm.db.qcm import Base, QcmDB
 from qcm.db.tentative import TentativeDB
 from qcm.model.data import QcmData
 
 logger = getLogger(__name__)
+
 
 @contextmanager
 def open_session(filename: str) -> ContextManager[Session]:
@@ -101,9 +101,11 @@ def save_to_file(data: QcmData, filename: str) -> None:
             db_qcm = model2db.convert_qcm(session, data.qcm)
             for i, tentative in enumerate(data.tentatives):
                 if tentative.qcm != data.qcm:
-                    logger.error(f"Expected all references to qcm to"
-                                 f" be the same, but tentative #{i}"
-                                 f" '{tentative.name}' has a differing one")
+                    logger.error(
+                        f"Expected all references to qcm to"
+                        f" be the same, but tentative #{i}"
+                        f" '{tentative.name}' has a differing one"
+                    )
                     raise AttributeError(f"Tentative #{i} has differing qcm")
 
                 model2db.convert_tentative(session, tentative, db_qcm)
@@ -117,8 +119,7 @@ def save_to_file(data: QcmData, filename: str) -> None:
             logger.info("Finished writing to file!")
         except Exception as e:
             logger.error(
-                f"Failed to write to file because of"
-                f" {e.__class__.__name__} raised: {e}"
+                f"Failed to write to file because of {e.__class__.__name__} raised: {e}"
             )
             raise e
 
@@ -162,6 +163,7 @@ def read_from_file(filename: str) -> QcmData:
             data.tentatives.append(db2model.convert_tentative(db_tentative, data.qcm))
 
         return data
+
 
 def log_tables(session: Session) -> None:
     """

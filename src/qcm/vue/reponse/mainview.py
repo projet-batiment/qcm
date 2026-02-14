@@ -1,20 +1,21 @@
 from logging import getLogger
 
-from ttkbootstrap import Button, Frame, Label, StringVar, Entry
+from ttkbootstrap import Button, Entry, Frame, StringVar
 from ttkbootstrap.scrolled import ScrolledFrame
 
-from qcm.model.tentative import Tentative
 from qcm.model.reponse import (
     Reponse,
     ReponseLibre,
     ReponseQCMultiples,
     ReponseQCUnique,
 )
+from qcm.model.tentative import Tentative
 from qcm.vue.parent import Parent
 
 from .ui import ReponseLibreUI, ReponseQCMultiplesUI, ReponseQCUniqueUI
 
 logger = getLogger(__name__)
+
 
 class MainView(Frame):
     """
@@ -94,8 +95,7 @@ class MainView(Frame):
 
             case _:
                 raise ValueError(
-                    f"Unsupported reponse type of class "
-                    f"'{reponse.__class__.__name__}'"
+                    f"Unsupported reponse type of class '{reponse.__class__.__name__}'"
                 )
 
         reponse_ui = ui_class(

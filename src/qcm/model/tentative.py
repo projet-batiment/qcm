@@ -1,19 +1,18 @@
 from dataclasses import dataclass, field
+from typing import Sequence
 
+from qcm.model.qcm import Qcm
+from qcm.model.question import (
+    QuestionLibre,
+    QuestionQCMultiples,
+    QuestionQCUnique,
+)
 from qcm.model.reponse import (
     Reponse,
     ReponseLibre,
     ReponseQCMultiples,
     ReponseQCUnique,
 )
-from qcm.model.question import (
-    QuestionLibre,
-    QuestionQCMultiples,
-    QuestionQCUnique,
-)
-from qcm.model.qcm import Qcm
-
-from typing import Sequence
 
 
 @dataclass()
@@ -42,8 +41,7 @@ class Tentative:
 
                 case _:
                     raise ValueError(
-                        f"Unkown model question type"
-                        f" {question.__class__.__name__}"
+                        f"Unkown model question type {question.__class__.__name__}"
                     )
 
             reponses.append(reponse_class(question=question))
