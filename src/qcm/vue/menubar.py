@@ -23,8 +23,11 @@ class MenuBar(Menu):
         self.controller = controller
 
         file_menu = Menu(self, tearoff=0)
-        self.add_cascade(label="Fichier", menu=file_menu)
+        self.add_cascade(label="Fichier QCM", menu=file_menu)
 
-        file_menu.add_command(label="Créer un nouveau QCM", command=controller.new_file)
-        file_menu.add_command(label="Ouvrir un QCM", command=controller.open_file)
-        file_menu.add_command(label="Sauvegarder le QCM", command=controller.save_file)
+        file_menu.add_command(label="Nouveau", command=controller.new_file)
+        file_menu.add_command(label="Ouvrir...", command=controller.open_file)
+        file_menu.add_command(label="Enregistrer", command=controller.save_file)
+        file_menu.add_command(
+            label="Enregistrer sous...", command=controller.save_file_as
+        )

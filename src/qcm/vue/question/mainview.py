@@ -32,6 +32,12 @@ class MainView(Frame):
         self.pack_propagate(False)
 
         self.titre_var = StringVar()
+
+        def titre_var_changed(*args):
+            self.qcm.titre = self.titre_var.get()
+
+        self.titre_var.trace_add("write", titre_var_changed)
+
         self.titre = Entry(self, textvariable=self.titre_var)
         self.titre.pack(pady=10)
 
@@ -183,16 +189,6 @@ class MainView(Frame):
         )
         question_ui.pack(fill="x", pady=10)
         self.questions_ui.append(question_ui)
-
-    def set_qcm_new(self) -> None:
-        """
-        Ouvrir un tout nouveau Qcm.
-
-        TODO: est-ce vraiment utile puisqu'il y a un controller ?
-        """
-
-        self.set_qcm(Qcm("Nouveau questionnaire"))
-        self.ajouter_question()
 
     def set_qcm(self, qcm: Qcm) -> None:
         """
