@@ -1,9 +1,10 @@
 from contextlib import contextmanager
 from logging import getLogger
+from typing import ContextManager
 
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 from qcm.db.qcm import Base, QcmDB
 from qcm.db.question import (
@@ -22,7 +23,22 @@ logger = getLogger(__name__)
 
 
 @contextmanager
-def open_session(filename: str):
+def open_session(filename: str) -> ContextManager[Session]:
+    """
+    Ouvre un fichier et crée un engine et une session sqlalchemy.
+    Finit par fermer la connection.
+
+    Args:
+        filename (str): chemin du fichier à ouvrir
+
+    Yields:
+        Session: la session ouverte
+
+    Raises:
+        SQLAlchemyError
+        Exception (transmission d'exceptions non gérées)
+    """
+
     logger.debug(f"Ouverture du fichier '{filename}'")
 
     extention = filename.split(".")[-1]
@@ -64,7 +80,18 @@ def open_session(filename: str):
         logger.info("Session has been closed.")
 
 
-def save_to_file(qcm: Qcm, filename: str):
+def save_to_file(qcm: Qcm, filename: str) -> None:
+    """
+    Enregistre un qcm dans un fichier
+
+    Args:
+        qcm (Qcm): le qcm (rempli) à enregistrer
+        filename (str): le chemin du fichier choisi
+
+    Raises:
+        Exception (transmission d'exceptions non gérées)
+    """
+
     with open_session(filename) as session:
         try:
             logger.debug("Clearing database...")
@@ -127,6 +154,7 @@ def save_to_file(qcm: Qcm, filename: str):
                     for each in db_question.choix_bdd:
                         session.add(each)
 
+                # save the operations in memory without commiting to file
                 session.flush()
 
             log_tables(session)
@@ -142,7 +170,22 @@ def save_to_file(qcm: Qcm, filename: str):
             raise e
 
 
-def read_from_file(filename: str):
+def read_from_file(filename: str) -> Qcm:
+    """
+    Ouvre un qcm depuis un fichier
+
+    Args:
+        filename (str): le chemin du fichier choisi
+
+    Returns:
+        Qcm: le qcm (rempli) lu dans le fichier
+
+    Raises:
+        AttributeError: cohérence de la base de données
+                        (ne doit contenir qu'un seul Qcm)
+        Exception (transmission d'exceptions non gérées)
+    """
+
     with open_session(filename) as session:
         log_tables(session)
 
@@ -198,7 +241,15 @@ def read_from_file(filename: str):
         return qcm
 
 
-def log_tables(session):
+def log_tables(session: Session) -> None:
+    """
+    Logs all the tables of a session and their contents.
+    Outputs directly to logger.debug.
+
+    Args:
+        session (Session): the open session
+    """
+
     tables = inspect(session.bind).get_table_names()
 
     logger.debug("Session contents:")

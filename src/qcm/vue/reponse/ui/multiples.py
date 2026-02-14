@@ -3,12 +3,24 @@ from tkinter import LEFT, TOP
 from ttkbootstrap import BooleanVar, Checkbutton, Frame, Label
 
 from qcm.model.question import QuestionQCMultiples
+from qcm.vue.parent import Parent
 
 from .ui import ReponseUI
 
 
 class ReponseQCMultiplesUI(ReponseUI):
-    def __init__(self, parent, question: QuestionQCMultiples, *args, **kwargs):
+    """
+    Conteneur de l'interface graphique pour éditer une ReponseQCMultiples
+    du model.
+    """
+
+    def __init__(self, parent: Parent, question: QuestionQCMultiples, *args, **kwargs):
+        """
+        Args:
+            parent (Parent): conteneur parent
+            question (QuestionQCMultiples): la question du model à laquelle répondre
+        """
+
         super().__init__(parent, question, *args, **kwargs)
 
         self.question = question
@@ -24,6 +36,13 @@ class ReponseQCMultiplesUI(ReponseUI):
         self.update()
 
     def update(self):
+        """
+        Met à jour la vue selon les données en mémoire.
+
+        Fonctionnement: supprime tous les éléments graphiques puis
+        les recrée avec les nouvelles valeurs.
+        """
+
         for each_old_ui in self.choix_ui:
             each_old_ui.pack_forget()
 

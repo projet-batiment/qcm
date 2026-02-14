@@ -1,8 +1,24 @@
 from tkinter import Menu
+from typing import TYPE_CHECKING
+
+from qcm.vue.parent import Parent
+
+if TYPE_CHECKING:
+    from qcm.control.controller import Control
 
 
 class MenuBar(Menu):
-    def __init__(self, parent, controller):
+    """
+    Implémentation de la barre de menu (en haut de l'interface)
+    """
+
+    def __init__(self, parent: Parent, controller: "Control"):
+        """
+        Args:
+            parent (Parent): the parent container
+            controller (Control): the application controller
+        """
+
         super().__init__(parent)
         self.controller = controller
 

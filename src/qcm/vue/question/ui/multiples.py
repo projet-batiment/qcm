@@ -3,19 +3,31 @@ from tkinter import BOTTOM, LEFT, RIGHT, TOP
 from ttkbootstrap import BooleanVar, Button, Checkbutton, Entry, Frame, StringVar
 
 from qcm.model.question import QuestionQCMultiples
+from qcm.vue.parent import Parent
 
 from .ui import QuestionUI
 
 
 class QuestionQCMultiplesUI(QuestionUI):
+    """
+    Conteneur de l'interface graphique pour éditer une QuestionQCMultiples
+    du model.
+
+    Attributes:
+        question_type (str):
+            Nom de ce type de question dans l'interface graphique.
+    """
+
     question_type = "Choix multiples"
 
-    def __init__(
-        self, parent, page_callback, question: QuestionQCMultiples, *args, **kwargs
-    ):
-        super().__init__(
-            parent, page_callback=page_callback, question=question, *args, **kwargs
-        )
+    def __init__(self, parent: Parent, question: QuestionQCMultiples, *args, **kwargs):
+        """
+        Args:
+            parent (Parent): conteneur parent
+            question (QuestionQCMultiples): la question du model à éditer
+        """
+
+        super().__init__(parent, question=question, *args, **kwargs)
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
@@ -36,6 +48,13 @@ class QuestionQCMultiplesUI(QuestionUI):
         self.update()
 
     def update(self):
+        """
+        Met à jour la vue selon les données en mémoire.
+
+        Fonctionnement: supprime tous les éléments graphiques puis
+        les recrée avec les nouvelles valeurs.
+        """
+
         for each_old_ui in self.choix_ui:
             each_old_ui.pack_forget()
 
@@ -98,4 +117,5 @@ class QuestionQCMultiplesUI(QuestionUI):
             self.choix_ui.append(each_frame)
 
 
+# ajouter cette implémentation à la liste de la classe mère
 QuestionUI.implementations.append(QuestionQCMultiplesUI)

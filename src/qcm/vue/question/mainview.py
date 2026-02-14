@@ -10,13 +10,24 @@ from qcm.model.question import (
     QuestionQCMultiples,
     QuestionQCUnique,
 )
+from qcm.vue.parent import Parent
 
 from .callback_type import CallbackCommand
 from .ui import QuestionLibreUI, QuestionQCMultiplesUI, QuestionQCUniqueUI, QuestionUI
 
 
 class MainView(Frame):
-    def __init__(self, parent):
+    """
+    Conteneur premier niveau pour le mode Edition de Qcm.
+    N'est instanciée qu'une seule fois par exécution.
+    """
+
+    def __init__(self, parent: Parent):
+        """
+        Args:
+            parent (Parent): the parent container
+        """
+
         super().__init__(parent, width=800)
         self.pack_propagate(False)
 
@@ -38,7 +49,24 @@ class MainView(Frame):
             style="info",
         )
 
-    def _editeur_callback(self, command: CallbackCommand, question_ui: QuestionUI):
+    def _editeur_callback(
+        self, command: CallbackCommand, question_ui: QuestionUI
+    ) -> None:
+        """
+        Fonction de rappel depuis un élément subordonné.
+        Permet d'exécuter une série d'actions associées à une commande,
+        lorsque la commande est appelée depuis l'un des éléments enfants.
+
+        Voir aussi CallbackCommand.
+
+        Cette fonction est donnée en argument de chaque enfant lors de
+        sa création.
+
+        Args:
+            command (CallbackCommand): la commande appelée
+            question_ui (QuestionUI): l'enfant dont provient l'appel
+        """
+
         try:
             question_index = self.questions_ui.index(question_ui)
         except ValueError:
@@ -88,7 +116,14 @@ class MainView(Frame):
 
         self.update_view()
 
-    def update_view(self):
+    def update_view(self) -> None:
+        """
+        Met à jour la vue selon les données en mémoire.
+
+        Fonctionnement: supprime tous les éléments graphiques puis
+        les recrée avec les nouvelles valeurs.
+        """
+
         self.titre_var.set(self.qcm.titre)
 
         for question_ui in self.questions_ui:
@@ -100,7 +135,12 @@ class MainView(Frame):
             self.__open_question(question)
         self.btn_ajouter.pack(pady=20)
 
-    def ajouter_question(self):
+    def ajouter_question(self) -> None:
+        """
+        Ajoute une nouvelle question à la liste des questions, selon
+        un modèle par défaut, puis redessine la vue.
+        """
+
         question = QuestionQCUnique("Nouvelle question", 1)
 
         self.__open_question(question)
@@ -109,7 +149,15 @@ class MainView(Frame):
 
         logging.info("Nouvelle question ajoutée")
 
-    def __open_question(self, question: Question):
+    def __open_question(self, question: Question) -> None:
+        """
+        Crée l'interface (.ui.QuestionUI) correspondant à la question
+        model donnée en argument, puis l'ajoute à la liste des interfaces.
+
+        Args:
+            question (Question): question (model) à afficher
+        """
+
         ui_class = None
 
         match question:
@@ -136,11 +184,25 @@ class MainView(Frame):
         question_ui.pack(fill="x", pady=10)
         self.questions_ui.append(question_ui)
 
-    def set_qcm_new(self):
+    def set_qcm_new(self) -> None:
+        """
+        Ouvrir un tout nouveau Qcm.
+
+        TODO: est-ce vraiment utile puisqu'il y a un controller ?
+        """
+
         self.set_qcm(Qcm("Nouveau questionnaire"))
         self.ajouter_question()
 
-    def set_qcm(self, qcm: Qcm):
+    def set_qcm(self, qcm: Qcm) -> None:
+        """
+        Remplace le qcm actuel et son contenu par le qcm
+        donné en argument.
+
+        Args:
+            qcm (Qcm): le qcm à ouvrir
+        """
+
         logging.info(f"Opening qcm '{qcm.titre}'")
         self.qcm = qcm
 

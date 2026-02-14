@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
+from typing import Callable
 
 from ttkbootstrap import (
     BooleanVar,
@@ -16,11 +17,25 @@ from ttkbootstrap import (
 )
 
 from qcm.model.question import Question
+from qcm.vue.parent import Parent
 
 from ..callback_type import CallbackCommand
 
 
 class QuestionUI(Frame):
+    """
+    Conteneur de l'interface graphique pour éditer une Question du model.
+    Classe générique implémentée pour les différents types de Question.
+
+    Attributes:
+        question_type (str):
+            Nom de ce type de question dans l'interface graphique.
+            Propriété abstraite définie à None dans cette classe générique.
+        implementations (ClassVar[list[QuestionUI]]):
+            Liste autoincrémentée des implémentations de la classe courante.
+            Voir le commentaire ci-dessous.
+    """
+
     # NOTE: question_type n'est plus une fonction statique puisque
     #  cela complique pour un rien la logique et la lourdeur de
     #  l'exécution dans mainview alors qu'avec un simple attribut
@@ -28,15 +43,24 @@ class QuestionUI(Frame):
     #  Certes c'est moins propre car on a pas de décorateur.
     #  Mais au moins c'est pas boilerplate.
     #  Et puis python avait qu'à avoir un décorateur abstractattribute aussi !!
-
+    question_type: str = None
     implementations: list[QuestionUI] = []
 
     def __init__(
         self,
-        parent,
-        page_callback,
+        parent: Parent,
+        page_callback: Callable[[CallbackCommand], None],
         question: Question,
     ):
+        """
+        Args:
+            parent (Parent): conteneur parent
+            page_callback (Callable[[CallbackCommand]], None):
+                Fonction de rappel du MainView parent.
+                Voir aussi dans MainView.
+            question (Question): la question du model à éditer
+        """
+
         super().__init__(parent, width=600, borderwidth=2, relief="solid")
 
         self.question = question
@@ -120,9 +144,3 @@ class QuestionUI(Frame):
             command=lambda: page_callback(CallbackCommand.MOVE_UP, self),
         )
         self.btn_up.pack(side=RIGHT, padx=2)
-
-    def delete(self):
-        raise NotImplementedError
-
-    def duplicate(self):
-        raise NotImplementedError

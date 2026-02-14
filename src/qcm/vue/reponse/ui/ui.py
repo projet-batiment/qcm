@@ -6,7 +6,18 @@ from qcm.model.question import Question
 
 
 class ReponseUI(Frame):
+    """
+    Conteneur de l'interface graphique pour éditer une Reponse du model.
+    Classe générique implémentée pour les différents types de Reponse.
+    """
+
     def __init__(self, parent, question: Question):
+        """
+        Args:
+            parent (Parent): conteneur parent
+            question (Question): la question du model à laquelle répondre
+        """
+
         super().__init__(parent, width=600, borderwidth=2, relief="solid")
 
         self.question = question
@@ -31,4 +42,5 @@ class ReponseUI(Frame):
         #     obligatoire.pack(side=LEFT, padx=10)
 
     def corriger(self) -> None:
+        # TODO: nécessaire / utile ??
         pass

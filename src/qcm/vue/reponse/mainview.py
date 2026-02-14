@@ -3,12 +3,23 @@ from ttkbootstrap.scrolled import ScrolledFrame
 
 from qcm.model import question
 from qcm.model.qcm import Qcm
+from qcm.vue.parent import Parent
 
 from .ui import ReponseLibreUI, ReponseQCMultiplesUI, ReponseQCUniqueUI
 
 
 class MainView(Frame):
-    def __init__(self, parent, qcm: Qcm):
+    """
+    Conteneur premier niveau pour le mode Remplissage de Tentative.
+    N'est instanciée qu'une seule fois par exécution.
+    """
+
+    def __init__(self, parent: Parent, qcm: Qcm):
+        """
+        Args:
+            parent (Parent): the parent container
+        """
+
         super().__init__(parent, width=800)
         self.pack_propagate(False)
 
@@ -31,6 +42,13 @@ class MainView(Frame):
         self.update_view()
 
     def update_view(self):
+        """
+        Met à jour la vue selon les données en mémoire.
+
+        Fonctionnement: supprime tous les éléments graphiques puis
+        les recrée avec les nouvelles valeurs.
+        """
+
         for each in self.reponse_uis:
             each.pack_forget()
 
@@ -62,4 +80,5 @@ class MainView(Frame):
         self.btn_valider.pack(pady=20)
 
     def valider(self):
+        # TODO: comment gérer ??
         raise NotImplementedError

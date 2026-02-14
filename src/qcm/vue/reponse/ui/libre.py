@@ -1,12 +1,24 @@
 from ttkbootstrap import Entry, Frame, StringVar
 
 from qcm.model.question import QuestionLibre
+from qcm.vue.parent import Parent
 
 from .ui import ReponseUI
 
 
 class ReponseLibreUI(ReponseUI):
-    def __init__(self, parent, question: QuestionLibre, *args, **kwargs):
+    """
+    Conteneur de l'interface graphique pour éditer une ReponseLibre
+    du model.
+    """
+
+    def __init__(self, parent: Parent, question: QuestionLibre, *args, **kwargs):
+        """
+        Args:
+            parent (Parent): conteneur parent
+            question (QuestionLibre): la question du model à laquelle répondre
+        """
+
         super().__init__(parent, question, *args, **kwargs)
 
         self.question = question
@@ -21,4 +33,7 @@ class ReponseLibreUI(ReponseUI):
         self.update()
 
     def update(self):
+        """
+        Met à jour la vue selon les données en mémoire.
+        """
         self.choix_var.set("")
