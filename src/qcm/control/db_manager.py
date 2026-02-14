@@ -145,7 +145,8 @@ def save_to_file(qcm: Qcm, filename: str) -> None:
 
                     case _:
                         raise ValueError(
-                            f"Unkown model question type{question.__class__.__name__}"
+                            f"Unkown model question type"
+                            f" {question.__class__.__name__}"
                         )
 
                 db_qcm.liste_questions.append(db_question)

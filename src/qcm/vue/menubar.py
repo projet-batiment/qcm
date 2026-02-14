@@ -16,6 +16,8 @@ class MenuBar(Menu):
     SAVE = "Enregistrer"
     SAVE_AS = "Enregistrer sous..."
     CLOSE = "Fermer"
+    START = "Commencer..."
+    VERIFY = "Corriger"
 
     def __init__(self, parent: Parent, controller: "Control"):
         """
@@ -27,21 +29,42 @@ class MenuBar(Menu):
         super().__init__(parent)
         self.controller = controller
 
-        self.file_menu = Menu(self, tearoff=0)
-        self.add_cascade(label="Fichier QCM", menu=self.file_menu)
+        self.qcm = Menu(self, tearoff=0)
+        self.add_cascade(label="QCM", menu=self.qcm)
 
-        self.file_menu.add_command(label=self.NEW, command=controller.new_file)
-        self.file_menu.add_command(label=self.OPEN, command=controller.open_file)
-        self.file_menu.add_command(label=self.SAVE, command=controller.save_file)
-        self.file_menu.add_command(label=self.SAVE_AS, command=controller.save_file_as)
-        self.file_menu.add_command(label=self.CLOSE, command=controller.close_qcm)
+        self.qcm.add_command(label=self.NEW, command=controller.new_qcm)
+        self.qcm.add_command(label=self.OPEN, command=controller.open_qcm)
+        self.qcm.add_command(label=self.SAVE, command=controller.save_qcm)
+        self.qcm.add_command(label=self.SAVE_AS, command=controller.save_qcm_as)
+        self.qcm.add_command(label=self.CLOSE, command=controller.close_qcm)
+
+        self.tentative = Menu(self, tearoff=0)
+        self.add_cascade(label="Tentative", menu=self.tentative)
+
+        self.tentative.add_command(label=self.START, command=controller.start_tentative)
+        self.tentative.add_command(label=self.VERIFY, command=controller.verifier_tentative)
+        self.tentative.add_command(label=self.SAVE, command=controller.save_tentative)
+        self.tentative.add_command(label=self.SAVE_AS, command=controller.save_tentative_as)
+        self.tentative.add_command(label=self.CLOSE, command=controller.close_tentative)
+
+    def has_tentative(self, has_tentative: bool):
+        if has_tentative:
+            self.tentative.entryconfig(self.SAVE, state="normal")
+            self.tentative.entryconfig(self.SAVE_AS, state="normal")
+            self.tentative.entryconfig(self.CLOSE, state="normal")
+            self.tentative.entryconfig(self.VERIFY, state="normal")
+        else:
+            self.tentative.entryconfig(self.SAVE, state="disabled")
+            self.tentative.entryconfig(self.SAVE_AS, state="disabled")
+            self.tentative.entryconfig(self.CLOSE, state="disabled")
+            self.tentative.entryconfig(self.VERIFY, state="disabled")
 
     def has_qcm(self, has_qcm: bool):
         if has_qcm:
-            self.file_menu.entryconfig(self.SAVE, state="normal")
-            self.file_menu.entryconfig(self.SAVE_AS, state="normal")
-            self.file_menu.entryconfig(self.CLOSE, state="normal")
+            self.qcm.entryconfig(self.SAVE, state="normal")
+            self.qcm.entryconfig(self.SAVE_AS, state="normal")
+            self.qcm.entryconfig(self.CLOSE, state="normal")
         else:
-            self.file_menu.entryconfig(self.SAVE, state="disabled")
-            self.file_menu.entryconfig(self.SAVE_AS, state="disabled")
-            self.file_menu.entryconfig(self.CLOSE, state="disabled")
+            self.qcm.entryconfig(self.SAVE, state="disabled")
+            self.qcm.entryconfig(self.SAVE_AS, state="disabled")
+            self.qcm.entryconfig(self.CLOSE, state="disabled")
