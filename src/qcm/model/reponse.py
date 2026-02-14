@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 
+from typing import Optional
+
 from qcm.model.question import (
     Question,
     QuestionLibre,
@@ -44,7 +46,11 @@ class ReponseQCUnique(Reponse):
     """
 
     question: QuestionQCUnique
-    reponse_choisie: int = QuestionQCUnique.NO_CHOICE_INDEX
+    __reponse_choisie: int = QuestionQCUnique.NO_CHOICE_INDEX
+
+    def __init__(self, question: QuestionQCUnique, reponse_choisie: Optional[int] = None):
+        self.question = question
+        self.reponse_choisie = reponse_choisie
 
     def verifier(self) -> bool:
         """
@@ -53,6 +59,13 @@ class ReponseQCUnique(Reponse):
 
         return self.question.index_bonne_reponse == self.reponse_choisie
 
+    @property
+    def reponse_choisie(self) -> int:
+        return self.__reponse_choisie
+
+    @reponse_choisie.setter
+    def reponse_choisie(self, index: Optional[int]) -> None:
+        self.__reponse_choisie = QuestionQCUnique.NO_CHOICE_INDEX if index is None else index
 
 @dataclass
 class ReponseQCMultiples(Reponse):

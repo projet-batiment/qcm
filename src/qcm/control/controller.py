@@ -7,6 +7,7 @@ from typing import Optional
 from qcm.control.appstate import AppState
 from qcm.control.db_manager import read_from_file, save_to_file
 from qcm.model.qcm import Qcm
+from qcm.model.data import QcmData
 from qcm.model.tentative import Tentative
 from qcm.vue import MenuBar, question, reponse, splashscreen
 
@@ -92,6 +93,11 @@ class Control:
             self.menubar.has_tentative(True)
 
     @property
+    def tentatives(self):
+        # TODO: temporary fix (only 1 Tentative for now)
+        return [] if self.tentative is None else [self.tentative]
+
+    @property
     def appstate(self) -> Optional[AppState]:
         """
         Renvoie l'état actuel de l'interface.
@@ -163,7 +169,12 @@ class Control:
         logger.debug(f"Opening qcm from file {self.filename}")
 
         try:
-            self.qcm = read_from_file(filename)
+            data = read_from_file(filename)
+            self.qcm = data.qcm
+
+            # TODO: plusieurs tentatives ?
+            self.tentative = next(iter(data.tentatives), None)
+
             self.states[AppState.EDIT].set_qcm(self.qcm)
             self.appstate = AppState.EDIT
 
@@ -182,6 +193,8 @@ class Control:
                 title="Lecture impossible",
                 message=f"Erreur lors de l'ouverture du fichier: {e}",
             )
+
+            logger.exception("Erreur lors de l'ouverture du fichier")
 
             return False
 
@@ -229,7 +242,8 @@ class Control:
             logger.debug(f"Saving qcm to file {self.filename}")
 
             try:
-                save_to_file(self.qcm, self.filename)
+                data = QcmData(self.qcm, self.tentatives)
+                save_to_file(data, self.filename)
 
                 messagebox.showinfo(
                     title="Sauvegarde réussie",

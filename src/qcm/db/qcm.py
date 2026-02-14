@@ -24,6 +24,7 @@ class QcmDB(Base):
         back_populates="qcm",
         cascade="all, delete-orphan",
     )
+    tentative = relationship("TentativeDB", back_populates="qcm")
 
     def __init__(
         self, titre: str, liste_questions: Optional[List["Question"]] = None

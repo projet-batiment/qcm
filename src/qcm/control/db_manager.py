@@ -2,25 +2,17 @@ from contextlib import contextmanager
 from logging import getLogger
 from typing import ContextManager
 
+from qcm.control.db import model2db, db2model
+
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
 
 from qcm.db.qcm import Base, QcmDB
-from qcm.db.question import (
-    QuestionLibreDB,
-    QuestionQCMultiplesDB,
-    QuestionQCUniqueDB,
-)
-from qcm.model.qcm import Qcm
-from qcm.model.question import (
-    QuestionLibre,
-    QuestionQCMultiples,
-    QuestionQCUnique,
-)
+from qcm.db.tentative import TentativeDB
+from qcm.model.data import QcmData
 
 logger = getLogger(__name__)
-
 
 @contextmanager
 def open_session(filename: str) -> ContextManager[Session]:
@@ -80,20 +72,23 @@ def open_session(filename: str) -> ContextManager[Session]:
         logger.info("Session has been closed.")
 
 
-def save_to_file(qcm: Qcm, filename: str) -> None:
+def save_to_file(data: QcmData, filename: str) -> None:
     """
-    Enregistre un qcm dans un fichier
+    Enregistre un qcm et ses tentatives dans un fichier.
+    Vérifie que chaque tentative est reliée au même qcm.
 
     Args:
-        qcm (Qcm): le qcm (rempli) à enregistrer
+        data (QcmData): les données (qcm et tentatives) à enregistrer
         filename (str): le chemin du fichier choisi
 
     Raises:
-        Exception (transmission d'exceptions non gérées)
+        AttributeError: les tentatives ont des qcm différents
+        Exception: (transmission d'exceptions non gérées)
     """
 
     with open_session(filename) as session:
         try:
+            # clear the file
             logger.debug("Clearing database...")
             for table_name in inspect(session.bind).get_table_names():
                 logger.debug(f"Deleting table {table_name}")
@@ -102,62 +97,18 @@ def save_to_file(qcm: Qcm, filename: str) -> None:
             session.commit()
             logger.debug("Deleted all the tables!")
 
-            logger.debug("Creating qcm object")
-            db_qcm = QcmDB(qcm.titre)
-            session.add(db_qcm)
-            session.flush()
+            # populate the file
+            db_qcm = model2db.convert_qcm(session, data.qcm)
+            for i, tentative in enumerate(data.tentatives):
+                if tentative.qcm != data.qcm:
+                    logger.error(f"Expected all references to qcm to"
+                                 f" be the same, but tentative #{i}"
+                                 f" '{tentative.name}' has a differing one")
+                    raise AttributeError(f"Tentative #{i} has differing qcm")
 
-            logger.debug("Populating qcm object")
-            for question in qcm.liste_questions:
-                arguments = {
-                    "enonce": question.enonce,
-                    "points": question.points,
-                    "obligatoire": question.obligatoire,
-                }
+                model2db.convert_tentative(session, tentative, db_qcm)
 
-                logger.debug(f"Creating question {question.__class__.__name__} object")
-                match question:
-                    case QuestionQCUnique():
-                        db_question = QuestionQCUniqueDB(**arguments)
-                        session.add(db_question)
-                        session.flush()
-
-                        db_question.choix_rep = question.choix
-                        db_question.id_bonne_reponse = question.index_bonne_reponse
-                        session.flush()
-
-                    case QuestionQCMultiples():
-                        db_question = QuestionQCMultiplesDB(**arguments)
-                        session.add(db_question)
-                        session.flush()
-
-                        db_question.choix_rep = question.choix
-                        db_question.id_bonne_reponse = question.index_bonnes_reponses
-                        session.flush()
-
-                    case QuestionLibre():
-                        db_question = QuestionLibreDB(
-                            rep_attendue=question.rep_attendue,
-                            **arguments,
-                        )
-                        session.add(db_question)
-                        session.flush()
-
-                    case _:
-                        raise ValueError(
-                            f"Unkown model question type"
-                            f" {question.__class__.__name__}"
-                        )
-
-                db_qcm.liste_questions.append(db_question)
-
-                if hasattr(db_question, "choix_bdd"):
-                    for each in db_question.choix_bdd:
-                        session.add(each)
-
-                # save the operations in memory without commiting to file
-                session.flush()
-
+            # log and write new contents
             log_tables(session)
 
             logger.debug("Writing data to the file")
@@ -166,12 +117,13 @@ def save_to_file(qcm: Qcm, filename: str) -> None:
             logger.info("Finished writing to file!")
         except Exception as e:
             logger.error(
-                f"Failed to write to file because of{e.__class__.__name__} raised: {e}"
+                f"Failed to write to file because of"
+                f" {e.__class__.__name__} raised: {e}"
             )
             raise e
 
 
-def read_from_file(filename: str) -> Qcm:
+def read_from_file(filename: str) -> QcmData:
     """
     Ouvre un qcm depuis un fichier
 
@@ -179,7 +131,7 @@ def read_from_file(filename: str) -> Qcm:
         filename (str): le chemin du fichier choisi
 
     Returns:
-        Qcm: le qcm (rempli) lu dans le fichier
+        QcmData: le qcm et ses tentatives, lus dans le fichier
 
     Raises:
         AttributeError: cohérence de la base de données
@@ -190,6 +142,7 @@ def read_from_file(filename: str) -> Qcm:
     with open_session(filename) as session:
         log_tables(session)
 
+        # read and check data consistency
         try:
             qcms = session.query(QcmDB).all()
         except Exception as e:
@@ -201,46 +154,14 @@ def read_from_file(filename: str) -> Qcm:
         if len(qcms) != 1:
             raise AttributeError(f"Expected exactly 1 qcm in the file, got {len(qcms)}")
 
+        # populate the model
         db_qcm = qcms[0]
-        qcm = Qcm(titre=db_qcm.titre)
+        data = QcmData(db2model.convert_qcm(db_qcm))
 
-        for db_question in db_qcm.liste_questions:
-            arguments = {
-                "enonce": db_question.enonce,
-                "points": db_question.points,
-                "obligatoire": db_question.obligatoire,
-            }
+        for db_tentative in session.query(TentativeDB).all():
+            data.tentatives.append(db2model.convert_tentative(db_tentative, data.qcm))
 
-            match db_question:
-                case QuestionQCUniqueDB():
-                    question = QuestionQCUnique(
-                        choix=db_question.choix_rep,
-                        index_bonne_reponse=db_question.id_bonne_reponse,
-                        **arguments,
-                    )
-
-                case QuestionQCMultiplesDB():
-                    question = QuestionQCMultiples(
-                        choix=db_question.choix_rep,
-                        index_bonnes_reponses=db_question.id_bonne_reponse,
-                        **arguments,
-                    )
-
-                case QuestionLibreDB():
-                    question = QuestionLibre(
-                        rep_attendue=db_question.rep_attendue,
-                        **arguments,
-                    )
-
-                case _:
-                    raise ValueError(
-                        f"Unkown db question type{db_question.__class__.__name__}"
-                    )
-
-            qcm.liste_questions.append(question)
-
-        return qcm
-
+        return data
 
 def log_tables(session: Session) -> None:
     """
