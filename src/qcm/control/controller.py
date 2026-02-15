@@ -1,12 +1,15 @@
 import logging
 from tkinter import filedialog, messagebox
+from typing import Optional
 
 from ttkbootstrap import Frame, Window
 
 from qcm.control.appstate import AppState
 from qcm.control.db_manager import read_from_file, save_to_file
+from qcm.model.data import QcmData
 from qcm.model.qcm import Qcm
-from qcm.vue import MenuBar, question, splashscreen
+from qcm.model.tentative import Tentative
+from qcm.vue import MenuBar, question, reponse, splashscreen
 
 logger = logging.getLogger(__name__)
 
@@ -29,41 +32,112 @@ class Control:
             window (Window): fenêtre principale de l'application
         """
 
-        self.appstate = AppState.SPLASH_SCREEN
-
         self.states = {
             AppState.SPLASH_SCREEN: splashscreen.MainView(window),
             AppState.EDIT: question.MainView(window),
+            AppState.ANSWER: reponse.MainView(window),
         }
+        self.__current_state: Optional[Frame] = None
+        self.appstate: AppState = AppState.SPLASH_SCREEN
 
-        window.config(menu=MenuBar(window, self))
+        self.menubar = MenuBar(window, self)
+        window.config(menu=self.menubar)
 
-        self.qcm = Qcm()
-        self.filename = None
+        self.qcm: Optional[Qcm] = None  # qcm affiché dans l'interface
+        self.tentative: Optional[Tentative] = (
+            None  # tentative affichée dans l'interface
+        )
+        self.filename: Optional[str] = None  # fichier de sauvegarde du qcm
 
-        self.current_state: Frame = None
-        self.set_appstate(AppState.SPLASH_SCREEN)
+    @property
+    def qcm(self) -> Optional[Qcm]:
+        return self.__qcm
 
-    def set_appstate(self, appstate: AppState) -> None:
+    @qcm.setter
+    def qcm(self, qcm: Optional[Qcm]) -> None:
+        self.__qcm = qcm
+
+        if qcm is None:
+            logger.debug("Setting qcm to None")
+            self.menubar.has_qcm(False)
+            self.appstate = AppState.SPLASH_SCREEN
+        else:
+            logger.debug(f"Setting qcm to '{qcm.titre}'")
+            self.menubar.has_qcm(True)
+
+    @property
+    def tentative(self) -> Optional[Tentative]:
+        return self.__tentative
+
+    @tentative.setter
+    def tentative(self, tentative: Optional[Tentative]) -> None:
+        """
+        Raises:
+            ValueError: raised in case "self.qcm != tentative.qcm"
+        """
+        self.__tentative = tentative
+
+        if tentative is None:
+            logger.debug("Setting tentative to None")
+            # TODO: menubar.has_tentative
+            self.menubar.has_tentative(False)
+            self.appstate = AppState.SPLASH_SCREEN
+        else:
+            if self.qcm != tentative.qcm:
+                # Les étapes précédentes du controller assurent
+                #   que self.qcm == tentative.qcm
+                raise ValueError(
+                    f"Expected self.qcm to already be set"
+                    f" to tentative.qcm: '{self.qcm.titre}'"
+                    f" != '{tentative.qcm.titre}'"
+                )
+
+            logger.debug(f"Setting tentative to '{tentative.nom}'")
+            # TODO: menubar.has_tentative
+            self.menubar.has_tentative(True)
+
+    @property
+    def tentatives(self):
+        # TODO: temporary fix (only 1 Tentative for now)
+        return [] if self.tentative is None else [self.tentative]
+
+    @property
+    def appstate(self) -> Optional[AppState]:
+        """
+        Renvoie l'état actuel de l'interface.
+
+        Returns:
+            Optional[AppState]:
+                L'état ou None s'il n'est pas trouvé dans la liste des états
+        """
+        return next(
+            (k for k, v in self.states.items() if v == self.__current_state), None
+        )
+
+    @appstate.setter
+    def appstate(self, appstate: AppState) -> None:
         """
         Permet de changer le mode de la vue
         Voir aussi les modes dans AppState
 
         Args:
             appstate (AppState): le nouvel état
+
+        Raises:
+            ValueError: l'état requis est inconnu
         """
 
         logger.debug(f"Setting appstate {appstate}")
         if appstate not in self.states:
             raise ValueError(f"Not a known state: {appstate}")
 
-        if self.current_state is not None:
-            self.current_state.pack_forget()
+        if self.__current_state is not None:
+            self.__current_state.pack_forget()
 
-        self.current_state = self.states[appstate]
-        self.current_state.pack(fill="both", expand=True)
+        self.__current_state = self.states[appstate]
+        self.__current_state.pack(fill="both", expand=True)
 
-    def new_file(self) -> None:
+    def new_qcm(self) -> None:
         """
         Créer un nouveau qcm et l'afficher en édition
         """
@@ -72,76 +146,110 @@ class Control:
 
         self.qcm = Qcm()
         self.states[AppState.EDIT].set_qcm(self.qcm)
-        self.set_appstate(AppState.EDIT)
+        self.appstate = AppState.EDIT
 
-    def open_file(self) -> None:
+    def open_qcm(self) -> bool:
         """
         Ouvrir un qcm depuis un fichier l'afficher en édition
+
+        Returns:
+            bool:
+                True si qcm effectivement ouvert
+                False si annulé ou erreur
         """
 
-        logger.debug("Asking filename for opennig qcm")
+        if self.qcm is not None and not self.__ask_save_qcm_and_close():
+            return False
 
+        logger.debug("Asking filename for opennig qcm")
         filename = filedialog.askopenfilename(
             title="Ouvrir...",
             **askfilename_options,
         )
 
-        if filename == ():
+        if len(filename) == 0:
             logger.debug("User cancelled operation...")
-            return
+            return False
 
         self.filename = filename
         logger.debug(f"Opening qcm from file {self.filename}")
 
         try:
-            self.qcm = read_from_file(filename)
+            data = read_from_file(filename)
+            self.qcm = data.qcm
+
+            # TODO: plusieurs tentatives ?
+            self.tentative = next(iter(data.tentatives), None)
+
             self.states[AppState.EDIT].set_qcm(self.qcm)
-            self.set_appstate(AppState.EDIT)
+            self.appstate = AppState.EDIT
+
+            return True
 
         except AttributeError:
             messagebox.showerror(
                 title="Lecture impossible",
                 message="La base de données du fichier spécifié est erronée.",
             )
+
+            return False
+
         except Exception as e:
             messagebox.showerror(
                 title="Lecture impossible",
                 message=f"Erreur lors de l'ouverture du fichier: {e}",
             )
 
-    def save_file_as(self) -> None:
+            logger.exception("Erreur lors de l'ouverture du fichier")
+
+            return False
+
+    def save_qcm_as(self) -> bool:
         """
-        Sauvegarder le qcm actuellement édité vers un fichier choisi interactivement.
+        Sauvegarder le qcm actuellement édité vers un
+        fichier choisi interactivement.
+
+        Returns:
+            bool:
+                True si sauvegardé
+                False si annulé
         """
 
         logger.debug("Asking filename for saving qcm as")
-
         filename = filedialog.asksaveasfilename(
             title="Enregistrer sous...",
             **askfilename_options,
         )
 
-        if filename == ():
+        if len(filename) == 0:
             logger.debug("User cancelled operation...")
-            return
+            return False
 
         self.filename = filename
-        self.save_file()
+        self.save_qcm()
 
-    def save_file(self) -> None:
+        return True
+
+    def save_qcm(self) -> bool:
         """
         Sauvegarder le qcm actuellement édité vers le fichier actuel.
         Demande le fichier à enregistrer s'il n'y en a pas en mémoire.
+
+        Returns:
+            bool:
+                True si sauvegardé
+                False si annulé ou erreur
         """
 
         if self.filename is None:
-            self.save_file_as()
+            return self.save_qcm_as()
 
         else:
             logger.debug(f"Saving qcm to file {self.filename}")
 
             try:
-                save_to_file(self.qcm, self.filename)
+                data = QcmData(self.qcm, self.tentatives)
+                save_to_file(data, self.filename)
 
                 messagebox.showinfo(
                     title="Sauvegarde réussie",
@@ -149,8 +257,89 @@ class Control:
                     f"'{self.filename}.'",
                 )
 
+                return True
+
             except Exception as e:
                 messagebox.showerror(
                     title="Sauvegarde impossible",
                     message=f"Erreur lors de la sauvegarde du fichier: {e}",
                 )
+
+                return False
+
+    def close_qcm(self) -> None:
+        """
+        Ferme le qcm actuellement édité.
+        """
+
+        self.__ask_save_qcm_and_close()
+
+    def __ask_save_qcm_and_close(self) -> bool:
+        """
+        Demande confirmation pour enregistrer le fichier avant fermeture.
+        Puis ferme le qcm actuel.
+
+        Returns:
+            bool:
+                True si continuer (boutons oui ou non choisis)
+                False si annuler (ne pas faire les actions suivantes)
+        """
+
+        answer = messagebox.askyesnocancel(
+            title="Confirmation",
+            message="Voulez-vous enregistrer le qcm avant la fermeture ? "
+            "Les modifications non-sauvegardées "
+            "pourraient être perdues.",
+        )
+
+        match answer:
+            case True:
+                logger.debug("Enregistrement du qcm avant fermeture")
+                proceed = self.save_qcm()
+
+            case False:
+                logger.debug("Fermeture du qcm sans enregistrement")
+                proceed = True
+
+            case None:
+                proceed = False
+
+        if proceed:
+            logger.debug("Fermeture du qcm")
+            self.qcm = None
+        else:
+            logger.info("Annulation de la fermeture du qcm...")
+
+        return proceed
+
+    def start_tentative(self) -> bool:
+        """
+        Commencer une tentative pour un qcm.
+        Vérifie si un qcm est déjà ouvert, sinon en ouvre un.
+
+        Returns:
+            bool:
+                True si tentative effectivement commencée
+                False si annulé ou erreur
+        """
+
+        if self.qcm is not None or self.open_qcm():
+            self.tentative = Tentative(qcm=self.qcm)
+            self.states[AppState.ANSWER].set_tentative(self.tentative)
+            self.appstate = AppState.ANSWER
+            return True
+
+        else:
+            return False
+
+    def verifier_tentative(self) -> None:
+        raise NotImplementedError
+
+    def save_tentative(self) -> None:
+        raise NotImplementedError
+
+    def save_tentative_as(self) -> None:
+        raise NotImplementedError
+
+    def close_tentative(self) -> None:
+        raise NotImplementedError

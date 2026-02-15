@@ -1,5 +1,3 @@
-from typing import List
-
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relationship
@@ -17,6 +15,8 @@ class QuestionDB(Base):
 
     qcm_id = Column(Integer, ForeignKey("qcm.id"))
     qcm = relationship("QcmDB", back_populates="liste_questions")
+
+    reponses = relationship("ReponseDB", back_populates="question")
 
     __mapper_args__ = {
         "polymorphic_identity": "question",
@@ -58,8 +58,8 @@ class QuestionQCMultiplesDB(QuestionDB):
 
     def __init__(
         self,
-        choix_rep: List[str] = None,
-        id_bonne_reponse: List[int] = None,
+        choix_rep: list[str] = None,
+        id_bonne_reponse: list[int] = None,
         **kwargs,
     ):
         super().__init__(**kwargs)
