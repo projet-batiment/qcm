@@ -2,7 +2,7 @@ from tkinter import LEFT, TOP
 
 from ttkbootstrap import BooleanVar, Checkbutton, Frame, Label
 
-from qcm.model.reponse import ReponseQCMultiples
+from qcm.model.question import QuestionQCMultiples
 from qcm.vue.parent import Parent
 
 from .ui import ReponseUI
@@ -14,20 +14,24 @@ class ReponseQCMultiplesUI(ReponseUI):
     du model.
     """
 
-    def __init__(self, parent: Parent, reponse: ReponseQCMultiples, *args, **kwargs):
+    def __init__(self, parent: Parent, question: QuestionQCMultiples, *args, **kwargs):
         """
         Args:
             parent (Parent): conteneur parent
-            reponse (ReponseQCMultiples): la reponse du model
+            question (QuestionQCMultiples): la question du model à laquelle répondre
         """
 
-        super().__init__(parent, reponse, *args, **kwargs)
+        super().__init__(parent, question, *args, **kwargs)
+
+        self.question = question
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
 
         self.choix_ui = []
         self.vars_etat = []
+
+        self.checked = set()
 
         self.update()
 
@@ -45,21 +49,14 @@ class ReponseQCMultiplesUI(ReponseUI):
         self.choix_ui = []
         self.vars_etat = []
 
-        for i, each_choix in enumerate(self.reponse.question.choix):
+        for i, each_choix in enumerate(self.question.choix_rep):
             each_frame = Frame(self.container)
             each_frame.pack(side=TOP, fill="x", expand=True)
 
             etat_var = BooleanVar(value=False)
-
-            def check_value_updated(*args, i=i, etat_var=etat_var):
-                self.reponse.set_choix(i, etat_var.get())
-
-            etat_var.trace_add("write", check_value_updated)
             self.vars_etat.append(etat_var)
-
             each_check = Checkbutton(each_frame, variable=etat_var)
             each_check.pack(side=LEFT)
-
             each_label = Label(each_frame, text=each_choix)
             each_label.pack(side=LEFT)
 

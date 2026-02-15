@@ -2,7 +2,7 @@ from tkinter import BOTTOM, LEFT, RIGHT, TOP
 
 from ttkbootstrap import Frame, Label
 
-from qcm.model.reponse import Reponse
+from qcm.model.question import Question
 
 
 class ReponseUI(Frame):
@@ -11,24 +11,24 @@ class ReponseUI(Frame):
     Classe générique implémentée pour les différents types de Reponse.
     """
 
-    def __init__(self, parent, reponse: Reponse):
+    def __init__(self, parent, question: Question):
         """
         Args:
             parent (Parent): conteneur parent
-            reponse (Reponse): la réponse du model
+            question (Question): la question du model à laquelle répondre
         """
 
         super().__init__(parent, width=600, borderwidth=2, relief="solid")
 
-        self.reponse = reponse
+        self.question = question
 
         self.haut = Frame(self)
         self.haut.pack(side=TOP, fill="x", expand=True, pady=5)
 
-        self.titre = Label(self.haut, text=reponse.question.enonce)
+        self.titre = Label(self.haut, text=question.enonce)
         self.titre.pack(side=LEFT, padx=5)
 
-        points = Label(self.haut, text=f"Points : {reponse.question.points}")
+        points = Label(self.haut, text=f"Points : {question.points}")
         points.pack(side=RIGHT)
 
         self.milieu = Frame(self)
@@ -40,3 +40,7 @@ class ReponseUI(Frame):
         # if reponse.question.requis:
         #     obligatoire = Label(self.bas, "Réponse requise")
         #     obligatoire.pack(side=LEFT, padx=10)
+
+    def corriger(self) -> None:
+        # TODO: nécessaire / utile ??
+        pass

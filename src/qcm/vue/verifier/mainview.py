@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from ttkbootstrap import Button, Entry, Frame, StringVar
+from ttkbootstrap import Button, Label, Frame, StringVar
 from ttkbootstrap.scrolled import ScrolledFrame
 
 from qcm.model.reponse import (
@@ -24,30 +24,20 @@ logger = getLogger(__name__)
 
 class MainView(Frame):
     """
-    Conteneur premier niveau pour le mode Remplissage de Tentative.
+    Conteneur premier niveau pour le mode Correction.
     N'est instanciée qu'une seule fois par exécution.
     """
 
-    def __init__(self, parent: Parent, controller: "Control"):
+    def __init__(self, parent: Parent):
         """
         Args:
             parent (Parent): the parent container
-            controller (Control): the app controller
         """
 
         super().__init__(parent, width=800)
         self.pack_propagate(False)
 
-        self.controller = controller
-
-        self.nom_var = StringVar()
-
-        def nom_var_changed(*args):
-            self.tentative.nom = self.nom_var.get()
-
-        self.nom_var.trace_add("write", nom_var_changed)
-
-        self.nom = Entry(self, textvariable=self.nom_var)
+        self.nom = Label(self)
         self.nom.pack(pady=10)
 
         self.reponses_ui = []
@@ -57,10 +47,6 @@ class MainView(Frame):
         self.scroll_container = Frame(self.scroll_outer)
         self.scroll_container.pack(fill="both", expand=True, padx=(0, 10))
 
-        self.btn_valider = Button(
-            self.scroll_container, text="✅ Envoyer", command=self.controller.verifier_tentative, style="info"
-        )
-
     def update_view(self):
         """
         Met à jour la vue selon les données en mémoire.
@@ -69,7 +55,7 @@ class MainView(Frame):
         les recrée avec les nouvelles valeurs.
         """
 
-        self.nom_var.set(self.tentative.nom)
+        self.nom.config(text=self.tentative.nom)
 
         for reponse_ui in self.reponses_ui:
             reponse_ui.pack_forget()

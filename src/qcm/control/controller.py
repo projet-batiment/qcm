@@ -9,7 +9,7 @@ from qcm.control.db_manager import read_from_file, save_to_file
 from qcm.model.data import QcmData
 from qcm.model.qcm import Qcm
 from qcm.model.tentative import Tentative
-from qcm.vue import MenuBar, question, reponse, splashscreen
+from qcm.vue import MenuBar, question, reponse, splashscreen, verifier
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,8 @@ class Control:
         self.states = {
             AppState.SPLASH_SCREEN: splashscreen.MainView(window),
             AppState.EDIT: question.MainView(window),
-            AppState.ANSWER: reponse.MainView(window),
+            AppState.ANSWER: reponse.MainView(window, self),
+            AppState.CORRECTION: verifier.MainView(window),
         }
         self.__current_state: Optional[Frame] = None
         self.appstate: AppState = AppState.SPLASH_SCREEN
@@ -333,7 +334,33 @@ class Control:
             return False
 
     def verifier_tentative(self) -> None:
-        raise NotImplementedError
+        score = 0
+        score_max = 0
+
+        for i, reponse in enumerate(self.tentative.liste_reponses):
+            if not reponse.has_answer():
+                logger.info(f"Reponse #{i} has no answer: {reponse}")
+
+                messagebox.showwarning(
+                    title="Vérification impossible",
+                    message=f"Veuillez répondre à toutes les questions avant"
+                            f" de valider (pas de réponse à la question {i+1})",
+                )
+
+                return
+
+            score_max += reponse.question.points
+            score += reponse.points
+
+            logger.debug(f"Reponse #{i} has score {reponse.points}")
+
+        self.appstate = AppState.CORRECTION
+        logger.debug(f"Tentative score is {score} / {score_max}")
+
+        messagebox.showinfo(
+            title="Score",
+            message=f"Votre score est de {score} sur {score_max}.",
+        )
 
     def save_tentative(self) -> None:
         raise NotImplementedError
@@ -343,3 +370,8 @@ class Control:
 
     def close_tentative(self) -> None:
         raise NotImplementedError
+
+    def editer_qcm(self) -> None:
+        self.qcm = self.tentative.qcm
+        self.states[AppState.EDIT].set_qcm(self.qcm)
+        self.appstate = AppState.EDIT
