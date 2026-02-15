@@ -5,7 +5,7 @@ from typing import Optional
 from ttkbootstrap import Frame, Window
 
 from qcm.control.appstate import AppState
-from qcm.control.db_manager import read_from_file, save_to_file
+from qcm.control.db.manager import read_from_file, save_to_file
 from qcm.model.data import QcmData
 from qcm.model.qcm import Qcm
 from qcm.model.tentative import Tentative
