@@ -92,7 +92,12 @@ class QuestionUI(Frame):
             lambda e: page_callback(CallbackCommand.CHANGE_TYPE, self),
         )
 
+        def points_var_changed(*args):
+            self.question.points = self.points_var.get()
+
         self.points_var = IntVar(value=question.points)
+        self.points_var.trace_add("write", points_var_changed)
+
         self.points_entry = Spinbox(
             self.haut, textvariable=self.points_var, from_=0, to=100, width=4
         )

@@ -9,7 +9,7 @@ from qcm.control.db_manager import read_from_file, save_to_file
 from qcm.model.data import QcmData
 from qcm.model.qcm import Qcm
 from qcm.model.tentative import Tentative
-from qcm.vue import MenuBar, question, reponse, splashscreen
+from qcm.vue import MenuBar, question, reponse, splashscreen, verifier
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,8 @@ class Control:
         self.states = {
             AppState.SPLASH_SCREEN: splashscreen.MainView(window),
             AppState.EDIT: question.MainView(window),
-            AppState.ANSWER: reponse.MainView(window),
+            AppState.ANSWER: reponse.MainView(window, self),
+            AppState.CORRECTION: verifier.MainView(window),
         }
         self.__current_state: Optional[Frame] = None
         self.appstate: AppState = AppState.SPLASH_SCREEN
@@ -316,6 +317,7 @@ class Control:
         """
         Commencer une tentative pour un qcm.
         Vérifie si un qcm est déjà ouvert, sinon en ouvre un.
+        Vérifie également la cohérence (si on peut répondre aux questions).
 
         Returns:
             bool:
@@ -324,6 +326,27 @@ class Control:
         """
 
         if self.qcm is not None or self.open_qcm():
+            if len(self.qcm.liste_questions) == 0:
+                messagebox.showwarning(
+                    title="Questionnaire incomplet",
+                    message="Veuillez renseigner au moins 1 question.",
+                )
+
+                return False
+
+            for i, question in enumerate(self.qcm.liste_questions):
+                if not question.coherent():
+                    logger.info(f"Question #{i} is incoherent: {question}")
+
+                    messagebox.showwarning(
+                        title="Questionnaire incomplet",
+                        message=f"Veuillez renseigner des réponses à toutes les"
+                        f" questions avant de valider (réponse incohérente"
+                        f" à la question {i + 1})",
+                    )
+
+                    return False
+
             self.tentative = Tentative(qcm=self.qcm)
             self.states[AppState.ANSWER].set_tentative(self.tentative)
             self.appstate = AppState.ANSWER
@@ -333,7 +356,34 @@ class Control:
             return False
 
     def verifier_tentative(self) -> None:
-        raise NotImplementedError
+        score = 0
+        score_max = 0
+
+        for i, each_reponse in enumerate(self.tentative.liste_reponses):
+            if not each_reponse.has_answer():
+                logger.info(f"Reponse #{i} has no answer: {each_reponse}")
+
+                messagebox.showwarning(
+                    title="Formulaire incomplet",
+                    message=f"Veuillez répondre à toutes les questions avant"
+                    f" de valider (pas de réponse à la question {i + 1})",
+                )
+
+                return
+
+            score_max += each_reponse.question.points
+            score += each_reponse.points
+
+            logger.debug(f"Reponse #{i} has score {each_reponse.points}")
+
+        self.states[AppState.CORRECTION].set_tentative(self.tentative)
+        self.appstate = AppState.CORRECTION
+        logger.debug(f"Tentative score is {score} / {score_max}")
+
+        messagebox.showinfo(
+            title="Score",
+            message=f"Votre score est de {score} sur {score_max}.",
+        )
 
     def save_tentative(self) -> None:
         raise NotImplementedError
@@ -343,3 +393,10 @@ class Control:
 
     def close_tentative(self) -> None:
         raise NotImplementedError
+
+    def editer_qcm(self) -> None:
+        self.qcm = self.tentative.qcm
+        # TODO: enregistrer la Tentative ?
+        self.tentative = None
+        self.states[AppState.EDIT].set_qcm(self.qcm)
+        self.appstate = AppState.EDIT

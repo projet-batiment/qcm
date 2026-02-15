@@ -5,10 +5,10 @@ from ttkbootstrap import BooleanVar, Checkbutton, Frame, Label
 from qcm.model.reponse import ReponseQCMultiples
 from qcm.vue.parent import Parent
 
-from .ui import ReponseUI
+from .qcm import CorrectionQCUI
 
 
-class ReponseQCMultiplesUI(ReponseUI):
+class CorrectionQCMultiplesUI(CorrectionQCUI):
     """
     Conteneur de l'interface graphique pour éditer une ReponseQCMultiples
     du model.
@@ -21,10 +21,7 @@ class ReponseQCMultiplesUI(ReponseUI):
             reponse (ReponseQCMultiples): la reponse du model
         """
 
-        super().__init__(parent, reponse, *args, **kwargs)
-
-        self.container = Frame(self.milieu)
-        self.container.pack(fill="x", expand=True)
+        super().__init__(parent=parent, reponse=reponse, *args, **kwargs)
 
         self.choix_ui = []
         self.vars_etat = []
@@ -49,18 +46,23 @@ class ReponseQCMultiplesUI(ReponseUI):
             each_frame = Frame(self.container)
             each_frame.pack(side=TOP, fill="x", expand=True)
 
-            etat_var = BooleanVar(value=False)
-
-            def check_value_updated(*args, i=i, etat_var=etat_var):
-                self.reponse.set_choix(i, etat_var.get())
-
-            etat_var.trace_add("write", check_value_updated)
+            etat_var = BooleanVar(value=i in self.reponse.reponses_choisies)
             self.vars_etat.append(etat_var)
+
+            corr_var = BooleanVar(
+                value=i in self.reponse.question.index_bonnes_reponses
+            )
+            self.vars_etat.append(corr_var)
 
             each_check = Checkbutton(each_frame, variable=etat_var)
             each_check.pack(side=LEFT)
+            each_check.config(state="disabled")
 
             each_label = Label(each_frame, text=each_choix)
             each_label.pack(side=LEFT)
+
+            each_check_corr = Checkbutton(each_frame, variable=corr_var)
+            each_check_corr.pack(side="right")
+            each_check_corr.config(state="disabled")
 
             self.choix_ui.append(each_frame)

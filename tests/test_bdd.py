@@ -10,32 +10,6 @@ from qcm.model.tentative import Tentative
 
 
 @pytest.fixture
-def qcm_test():
-    return Qcm(
-        titre="QCM de test",
-        liste_questions=[
-            QuestionQCUnique(
-                enonce="Test de choix unique",
-                points=3,
-                choix=["hello", "world", "!"],
-                index_bonne_reponse=0,
-            ),
-            QuestionQCMultiples(
-                enonce="Test de choix multiples",
-                points=2,
-                choix=["hello", "world", "!"],
-                index_bonnes_reponses={0, 1},
-            ),
-            QuestionLibre(
-                enonce="Test de texte libre",
-                points=1,
-                rep_attendue="bien",
-            ),
-        ],
-    )
-
-
-@pytest.fixture
 def data() -> QcmData:
     qcm = Qcm(
         titre="QCM de test",

@@ -19,6 +19,7 @@ class MenuBar(Menu):
     CLOSE = "Fermer"
     START = "Commencer..."
     VERIFY = "Corriger"
+    EDIT_QCM = "Éditer le QCM"
 
     def __init__(self, parent: Parent, controller: "Control"):
         """
@@ -46,6 +47,7 @@ class MenuBar(Menu):
         self.tentative.add_command(
             label=self.VERIFY, command=controller.verifier_tentative
         )
+        self.tentative.add_command(label=self.EDIT_QCM, command=controller.editer_qcm)
         self.tentative.add_command(label=self.SAVE, command=controller.save_tentative)
         self.tentative.add_command(
             label=self.SAVE_AS, command=controller.save_tentative_as
@@ -58,11 +60,13 @@ class MenuBar(Menu):
             self.tentative.entryconfig(self.SAVE_AS, state="normal")
             self.tentative.entryconfig(self.CLOSE, state="normal")
             self.tentative.entryconfig(self.VERIFY, state="normal")
+            self.tentative.entryconfig(self.EDIT_QCM, state="normal")
         else:
             self.tentative.entryconfig(self.SAVE, state="disabled")
             self.tentative.entryconfig(self.SAVE_AS, state="disabled")
             self.tentative.entryconfig(self.CLOSE, state="disabled")
             self.tentative.entryconfig(self.VERIFY, state="disabled")
+            self.tentative.entryconfig(self.EDIT_QCM, state="disabled")
 
     def has_qcm(self, has_qcm: bool):
         if has_qcm:

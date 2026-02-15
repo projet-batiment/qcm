@@ -1,6 +1,6 @@
 from ttkbootstrap import Entry, Frame, StringVar
 
-from qcm.model.question import QuestionLibre
+from qcm.model.reponse import ReponseLibre
 from qcm.vue.parent import Parent
 
 from .ui import ReponseUI
@@ -12,22 +12,25 @@ class ReponseLibreUI(ReponseUI):
     du model.
     """
 
-    def __init__(self, parent: Parent, question: QuestionLibre, *args, **kwargs):
+    def __init__(self, parent: Parent, reponse: ReponseLibre, *args, **kwargs):
         """
         Args:
             parent (Parent): conteneur parent
-            question (QuestionLibre): la question du model à laquelle répondre
+            reponse (ReponseLibre): la reponse du model
         """
 
-        super().__init__(parent, question, *args, **kwargs)
-
-        self.question = question
+        super().__init__(parent, reponse, *args, **kwargs)
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
 
-        self.choix_var = StringVar(value="")
-        self.answer = Entry(self.container, textvariable=self.choix_var)
+        def reponse_var_changed(*args):
+            self.reponse.reponse = self.reponse_var.get()
+
+        self.reponse_var = StringVar(value="")
+        self.reponse_var.trace_add("write", reponse_var_changed)
+
+        self.answer = Entry(self.container, textvariable=self.reponse_var)
         self.answer.pack(fill="x")
 
         self.update()
@@ -36,4 +39,4 @@ class ReponseLibreUI(ReponseUI):
         """
         Met à jour la vue selon les données en mémoire.
         """
-        self.choix_var.set("")
+        self.reponse_var.set(self.reponse.reponse)

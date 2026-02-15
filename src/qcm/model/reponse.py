@@ -23,6 +23,17 @@ class Reponse(ABC):
     question: Question
 
     @abstractmethod
+    def has_answer(self) -> bool:
+        """
+        Vérifie si l'utilisateur a renseigné une réponse ou non.
+
+        Returns:
+            bool: est ce que la réponse est renseignée.
+        """
+
+        pass
+
+    @abstractmethod
     def verifier(self) -> bool:
         """
         Vérifie si la réponse renseignée est correcte ou non.
@@ -32,6 +43,12 @@ class Reponse(ABC):
         """
 
         pass
+
+    @property
+    def points(self) -> int:
+        # TODO: réponse à points partiels ?
+        #       par ex. QCM -> 1 point par bonne réponse
+        return self.question.points if self.verifier() else 0
 
 
 @dataclass
@@ -52,6 +69,9 @@ class ReponseQCUnique(Reponse):
     ):
         self.question = question
         self.reponse_choisie = reponse_choisie
+
+    def has_answer(self) -> bool:
+        return self.reponse_choisie != QuestionQCUnique.NO_CHOICE_INDEX
 
     def verifier(self) -> bool:
         """
@@ -84,12 +104,21 @@ class ReponseQCMultiples(Reponse):
     question: QuestionQCMultiples
     reponses_choisies: set[int] = field(default_factory=set)
 
+    def has_answer(self) -> bool:
+        return bool(self.reponses_choisies)
+
     def verifier(self) -> bool:
         """
         Implémentation de méthode abstraite
         """
 
         return self.question.index_bonnes_reponses == self.reponses_choisies
+
+    def set_choix(self, index: int, value: bool):
+        if value:
+            self.reponses_choisies.add(index)
+        else:
+            self.reponses_choisies.remove(index)
 
 
 @dataclass
@@ -105,9 +134,14 @@ class ReponseLibre(Reponse):
     question: QuestionLibre
     reponse: str = "Réponse"
 
+    def has_answer(self) -> bool:
+        return bool(self.reponse) and not self.reponse.isspace()
+
     def verifier(self) -> bool:
         """
         Implémentation de méthode abstraite
         """
 
-        self.question.rep_attendue.strip().lower() == self.reponse.strip().lower()
+        return (
+            self.question.rep_attendue.strip().lower() == self.reponse.strip().lower()
+        )

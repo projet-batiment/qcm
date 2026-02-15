@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from logging import getLogger
 from typing import ClassVar, Optional
+
+logger = getLogger(__name__)
 
 
 @dataclass
@@ -17,6 +20,17 @@ class Question(ABC):
     enonce: str = "Énoncé"
     points: int = 1
     obligatoire: bool = True
+
+    @abstractmethod
+    def coherent(self) -> bool:
+        """
+        Returns:
+            bool:
+                True si la question est cohérente (a au moins 1 réponse)
+                False si la question est incohérente
+        """
+
+        pass
 
 
 @dataclass
@@ -104,6 +118,27 @@ class QuestionQCMultiples(QuestionQC):
         if index in self.index_bonnes_reponses:
             self.index_bonnes_reponses.remove(index)
 
+    def coherent(self) -> bool:
+        """
+        Implémentation de méthode abstraite
+        """
+
+        if not self.choix:
+            logger.debug(
+                f"{self.__class__.__name__}: aucun choix indiqué: {self.choix = }"
+            )
+            return False
+
+        for index_correct in self.index_bonnes_reponses:
+            if index_correct < 0 or len(self.choix) <= index_correct:
+                logger.debug(
+                    f"{self.__class__.__name__}: l'indice correct {index_correct}"
+                    f" n'est pas dans la liste des choix: {self.choix = }"
+                )
+                return False
+
+        return True
+
 
 @dataclass
 class QuestionQCUnique(QuestionQC):
@@ -153,6 +188,27 @@ class QuestionQCUnique(QuestionQC):
         if self.index_bonne_reponse == index:
             self.index_bonne_reponse = self.NO_CHOICE_INDEX
 
+    def coherent(self) -> bool:
+        """
+        Implémentation de méthode abstraite
+        """
+
+        if not self.choix:
+            logger.debug(
+                f"{self.__class__.__name__}: aucun choix indiqué: {self.choix = }"
+            )
+            return False
+
+        if self.index_bonne_reponse < 0 or len(self.choix) <= self.index_bonne_reponse:
+            logger.debug(
+                f"{self.__class__.__name__}: l'indice correct"
+                f" {self.index_bonne_reponse}"
+                f" n'est pas dans la liste des choix: {self.choix = }"
+            )
+            return False
+
+        return True
+
 
 @dataclass
 class QuestionLibre(Question):
@@ -164,3 +220,17 @@ class QuestionLibre(Question):
     """
 
     rep_attendue: str = "Réponse attendue"
+
+    def coherent(self) -> bool:
+        """
+        Implémentation de méthode abstraite
+        """
+
+        if not self.rep_attendue or self.rep_attendue.isspace():
+            logger.debug(
+                f"{self.__class__.__name__}: réponse attendue vide:"
+                f" '{self.rep_attendue = }'"
+            )
+            return False
+
+        return True

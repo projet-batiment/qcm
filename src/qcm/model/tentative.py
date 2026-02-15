@@ -65,3 +65,21 @@ class Tentative:
     @liste_reponses.setter
     def liste_reponses(self, liste_reponses: Sequence[Reponse]):
         raise AttributeError("Tentative.liste_reponses is read-only")
+
+    @property
+    def score(self) -> int:
+        """
+        Calcule le score actuel.
+
+        Returns:
+            int: score actuel
+        """
+        score = 0
+
+        for i, reponse in enumerate(self.liste_reponses):
+            if not reponse.has_answer():
+                raise ValueError(f"Reponse #{i} has no answer: {reponse}")
+
+            score += reponse.points
+
+        return score
