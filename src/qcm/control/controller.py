@@ -376,6 +376,7 @@ class Control:
 
             logger.debug(f"Reponse #{i} has score {reponse.points}")
 
+        self.states[AppState.CORRECTION].set_tentative(self.tentative)
         self.appstate = AppState.CORRECTION
         logger.debug(f"Tentative score is {score} / {score_max}")
 

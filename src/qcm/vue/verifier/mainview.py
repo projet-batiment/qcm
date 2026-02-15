@@ -12,7 +12,7 @@ from qcm.model.reponse import (
 from qcm.model.tentative import Tentative
 from qcm.vue.parent import Parent
 
-from .ui import ReponseLibreUI, ReponseQCMultiplesUI, ReponseQCUniqueUI
+from .ui import CorrectionLibreUI, CorrectionQCMultiplesUI, CorrectionQCUniqueUI
 
 from typing import TYPE_CHECKING
 
@@ -40,6 +40,9 @@ class MainView(Frame):
         self.nom = Label(self)
         self.nom.pack(pady=10)
 
+        self.score = Label(self)
+        self.score.pack(pady=10)
+
         self.reponses_ui = []
 
         self.scroll_outer = ScrolledFrame(self, autohide=True)
@@ -56,15 +59,14 @@ class MainView(Frame):
         """
 
         self.nom.config(text=self.tentative.nom)
+        self.score.config(text=f"Score obtenu : {self.tentative.score} / {self.tentative.qcm.score}")
 
         for reponse_ui in self.reponses_ui:
             reponse_ui.pack_forget()
-        self.btn_valider.pack_forget()
 
         self.reponses_ui = []
         for reponse in self.tentative.liste_reponses:
             self.__open_reponse(reponse)
-        self.btn_valider.pack(pady=20)
 
     def __open_reponse(self, reponse: Reponse) -> None:
         """
@@ -79,13 +81,13 @@ class MainView(Frame):
 
         match reponse:
             case ReponseQCUnique():
-                ui_class = ReponseQCUniqueUI
+                ui_class = CorrectionQCUniqueUI
 
             case ReponseQCMultiples():
-                ui_class = ReponseQCMultiplesUI
+                ui_class = CorrectionQCMultiplesUI
 
             case ReponseLibre():
-                ui_class = ReponseLibreUI
+                ui_class = CorrectionLibreUI
 
             case _:
                 raise ValueError(

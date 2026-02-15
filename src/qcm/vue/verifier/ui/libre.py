@@ -1,34 +1,33 @@
-from ttkbootstrap import Entry, Frame, StringVar
+from ttkbootstrap import Label, Frame, StringVar
 
-from qcm.model.question import QuestionLibre
+from qcm.model.reponse import ReponseLibre
 from qcm.vue.parent import Parent
 
-from .ui import ReponseUI
+from .ui import CorrectionUI
 
 
-class ReponseLibreUI(ReponseUI):
+class CorrectionLibreUI(CorrectionUI):
     """
-    Conteneur de l'interface graphique pour éditer une ReponseLibre
-    du model.
+    Conteneur de l'interface graphique pour afficher la correction
+    d'une ReponseLibre du model.
     """
 
-    def __init__(self, parent: Parent, question: QuestionLibre, *args, **kwargs):
+    def __init__(self, parent: Parent, reponse: ReponseLibre, *args, **kwargs):
         """
         Args:
             parent (Parent): conteneur parent
-            question (QuestionLibre): la question du model à laquelle répondre
+            reponse (ReponseLibre): la reponse du model
         """
 
-        super().__init__(parent, question, *args, **kwargs)
-
-        self.question = question
+        super().__init__(parent, reponse, *args, **kwargs)
 
         self.container = Frame(self.milieu)
         self.container.pack(fill="x", expand=True)
 
-        self.choix_var = StringVar(value="")
-        self.answer = Entry(self.container, textvariable=self.choix_var)
+        self.answer = Label(self.container)
         self.answer.pack(fill="x")
+
+        self.correction = Label(self.container)
 
         self.update()
 
@@ -36,4 +35,10 @@ class ReponseLibreUI(ReponseUI):
         """
         Met à jour la vue selon les données en mémoire.
         """
-        self.choix_var.set("")
+
+        self.answer.config(text=f"Votre réponse : {self.reponse.reponse}")
+        if self.reponse.verifier():
+            self.correction.pack_forget()
+        else:
+            self.correction.config(text=f"Réponse attendue : {self.reponse.question.rep_attendue}")
+            self.correction.pack(fill="x")

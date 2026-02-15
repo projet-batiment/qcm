@@ -1,5 +1,6 @@
-from .libre import ReponseLibreUI
-from .multiples import ReponseQCMultiplesUI
-from .unique import ReponseQCUniqueUI
+from .libre import CorrectionLibreUI
+from .multiples import CorrectionQCMultiplesUI
+from .unique import CorrectionQCUniqueUI
+from .qcm import CorrectionQCUI
 
-__all__ = ["ReponseQCMultiplesUI", "ReponseQCUniqueUI", "ReponseLibreUI"]
+__all__ = ["CorrectionQCMultiplesUI", "CorrectionQCUniqueUI", "CorrectionLibreUI", "CorrectionQCUI"]
