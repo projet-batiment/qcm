@@ -1,4 +1,4 @@
-from tkinter import Menu
+from tkinter import Menu, messagebox
 from typing import TYPE_CHECKING
 
 from qcm.vue.parent import Parent
@@ -32,7 +32,7 @@ class MenuBar(Menu):
         self.controller = controller
 
         self.qcm = Menu(self, tearoff=0)
-        self.add_cascade(label="QCM", menu=self.qcm)
+        self.add_cascade(label="Questionnaire", menu=self.qcm)
 
         self.qcm.add_command(label=self.NEW, command=controller.new_qcm)
         self.qcm.add_command(label=self.OPEN, command=controller.open_qcm)
@@ -41,7 +41,7 @@ class MenuBar(Menu):
         self.qcm.add_command(label=self.CLOSE, command=controller.close_qcm)
 
         self.tentative = Menu(self, tearoff=0)
-        self.add_cascade(label="Tentative", menu=self.tentative)
+        self.add_cascade(label="Formulaire", menu=self.tentative)
 
         self.tentative.add_command(label=self.START, command=controller.start_tentative)
         self.tentative.add_command(
@@ -53,6 +53,18 @@ class MenuBar(Menu):
             label=self.SAVE_AS, command=controller.save_tentative_as
         )
         self.tentative.add_command(label=self.CLOSE, command=controller.close_tentative)
+
+        self.aide = Menu(self, tearoff=0)
+        self.add_cascade(label="Aide", menu=self.aide)
+
+        def show_apropos(*args):
+            messagebox.showinfo(
+                title="À propos",
+                message="QCM – Réalisé par Elio POLETTI, Gaspard RÉGENT, Aurélien"
+                "EICH et Erwan BORÉ – Projet Développement Collaboratif Miq3 2025-2026",
+            )
+
+        self.aide.add_command(label="À propos", command=show_apropos)
 
     def has_tentative(self, has_tentative: bool):
         if has_tentative:
