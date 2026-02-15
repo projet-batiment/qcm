@@ -1,4 +1,5 @@
 from logging import getLogger
+from typing import TYPE_CHECKING
 
 from ttkbootstrap import Button, Entry, Frame, StringVar
 from ttkbootstrap.scrolled import ScrolledFrame
@@ -13,8 +14,6 @@ from qcm.model.tentative import Tentative
 from qcm.vue.parent import Parent
 
 from .ui import ReponseLibreUI, ReponseQCMultiplesUI, ReponseQCUniqueUI
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from qcm.control.controller import Control
@@ -58,7 +57,10 @@ class MainView(Frame):
         self.scroll_container.pack(fill="both", expand=True, padx=(0, 10))
 
         self.btn_valider = Button(
-            self.scroll_container, text="✅ Envoyer", command=self.controller.verifier_tentative, style="info"
+            self.scroll_container,
+            text="✅ Envoyer",
+            command=self.controller.verifier_tentative,
+            style="info",
         )
 
     def update_view(self):

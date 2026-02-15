@@ -34,7 +34,10 @@ class CorrectionUI(Frame):
         self.titre = Label(self.haut_haut, text=reponse.question.enonce)
         self.titre.pack(side=LEFT, padx=5)
 
-        points = Label(self.haut_haut, text=f"Points obtenus : {reponse.points} / {reponse.question.points}")
+        points = Label(
+            self.haut_haut,
+            text=f"Points obtenus : {reponse.points} / {reponse.question.points}",
+        )
         points.pack(side=RIGHT)
 
         result = "correcte" if self.reponse.verifier() else "erronée"

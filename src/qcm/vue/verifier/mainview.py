@@ -1,6 +1,7 @@
 from logging import getLogger
+from typing import TYPE_CHECKING
 
-from ttkbootstrap import Button, Label, Frame, StringVar
+from ttkbootstrap import Frame, Label
 from ttkbootstrap.scrolled import ScrolledFrame
 
 from qcm.model.reponse import (
@@ -14,10 +15,8 @@ from qcm.vue.parent import Parent
 
 from .ui import CorrectionLibreUI, CorrectionQCMultiplesUI, CorrectionQCUniqueUI
 
-from typing import TYPE_CHECKING
-
 if TYPE_CHECKING:
-    from qcm.control.controller import Control
+    pass
 
 logger = getLogger(__name__)
 
@@ -59,7 +58,9 @@ class MainView(Frame):
         """
 
         self.nom.config(text=self.tentative.nom)
-        self.score.config(text=f"Score obtenu : {self.tentative.score} / {self.tentative.qcm.score}")
+        self.score.config(
+            text=f"Score obtenu : {self.tentative.score} / {self.tentative.qcm.score}"
+        )
 
         for reponse_ui in self.reponses_ui:
             reponse_ui.pack_forget()

@@ -142,4 +142,6 @@ class ReponseLibre(Reponse):
         Implémentation de méthode abstraite
         """
 
-        return self.question.rep_attendue.strip().lower() == self.reponse.strip().lower()
+        return (
+            self.question.rep_attendue.strip().lower() == self.reponse.strip().lower()
+        )

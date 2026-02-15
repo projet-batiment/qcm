@@ -1,11 +1,9 @@
 from tkinter import LEFT, TOP
 
-from ttkbootstrap import BooleanVar, Checkbutton, Frame, Label
-
-from qcm.model.reponse import ReponseQCMultiples
-from qcm.vue.parent import Parent
+from ttkbootstrap import Frame, Label
 
 from .ui import CorrectionUI
+
 
 class CorrectionQCUI(CorrectionUI):
     """

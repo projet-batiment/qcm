@@ -329,7 +329,7 @@ class Control:
             if len(self.qcm.liste_questions) == 0:
                 messagebox.showwarning(
                     title="Questionnaire incomplet",
-                    message=f"Veuillez renseigner au moins 1 question.",
+                    message="Veuillez renseigner au moins 1 question.",
                 )
 
                 return False
@@ -341,8 +341,8 @@ class Control:
                     messagebox.showwarning(
                         title="Questionnaire incomplet",
                         message=f"Veuillez renseigner des réponses à toutes les"
-                                f" questions avant de valider (réponse incohérente"
-                                f" à la question {i+1})",
+                        f" questions avant de valider (réponse incohérente"
+                        f" à la question {i + 1})",
                     )
 
                     return False
@@ -359,22 +359,22 @@ class Control:
         score = 0
         score_max = 0
 
-        for i, reponse in enumerate(self.tentative.liste_reponses):
-            if not reponse.has_answer():
-                logger.info(f"Reponse #{i} has no answer: {reponse}")
+        for i, each_reponse in enumerate(self.tentative.liste_reponses):
+            if not each_reponse.has_answer():
+                logger.info(f"Reponse #{i} has no answer: {each_reponse}")
 
                 messagebox.showwarning(
                     title="Formulaire incomplet",
                     message=f"Veuillez répondre à toutes les questions avant"
-                            f" de valider (pas de réponse à la question {i+1})",
+                    f" de valider (pas de réponse à la question {i + 1})",
                 )
 
                 return
 
-            score_max += reponse.question.points
-            score += reponse.points
+            score_max += each_reponse.question.points
+            score += each_reponse.points
 
-            logger.debug(f"Reponse #{i} has score {reponse.points}")
+            logger.debug(f"Reponse #{i} has score {each_reponse.points}")
 
         self.states[AppState.CORRECTION].set_tentative(self.tentative)
         self.appstate = AppState.CORRECTION

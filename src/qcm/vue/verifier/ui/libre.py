@@ -1,4 +1,4 @@
-from ttkbootstrap import Label, Frame, StringVar
+from ttkbootstrap import Frame, Label
 
 from qcm.model.reponse import ReponseLibre
 from qcm.vue.parent import Parent
@@ -40,5 +40,7 @@ class CorrectionLibreUI(CorrectionUI):
         if self.reponse.verifier():
             self.correction.pack_forget()
         else:
-            self.correction.config(text=f"Réponse attendue : {self.reponse.question.rep_attendue}")
+            self.correction.config(
+                text=f"Réponse attendue : {self.reponse.question.rep_attendue}"
+            )
             self.correction.pack(fill="x")

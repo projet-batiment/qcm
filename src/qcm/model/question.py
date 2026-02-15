@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from logging import getLogger
 from typing import ClassVar, Optional
 
-from logging import getLogger
 logger = getLogger(__name__)
 
 
@@ -124,13 +124,17 @@ class QuestionQCMultiples(QuestionQC):
         """
 
         if not self.choix:
-            logger.debug(f"{self.__class__.__name__}: aucun choix indiqué: {self.choix = }")
+            logger.debug(
+                f"{self.__class__.__name__}: aucun choix indiqué: {self.choix = }"
+            )
             return False
 
         for index_correct in self.index_bonnes_reponses:
             if index_correct < 0 or len(self.choix) <= index_correct:
-                logger.debug(f"{self.__class__.__name__}: l'indice correct {index_correct}"
-                             f" n'est pas dans la liste des choix: {self.choix = }")
+                logger.debug(
+                    f"{self.__class__.__name__}: l'indice correct {index_correct}"
+                    f" n'est pas dans la liste des choix: {self.choix = }"
+                )
                 return False
 
         return True
@@ -190,12 +194,17 @@ class QuestionQCUnique(QuestionQC):
         """
 
         if not self.choix:
-            logger.debug(f"{self.__class__.__name__}: aucun choix indiqué: {self.choix = }")
+            logger.debug(
+                f"{self.__class__.__name__}: aucun choix indiqué: {self.choix = }"
+            )
             return False
 
         if self.index_bonne_reponse < 0 or len(self.choix) <= self.index_bonne_reponse:
-            logger.debug(f"{self.__class__.__name__}: l'indice correct {self.index_bonne_reponse}"
-                         f" n'est pas dans la liste des choix: {self.choix = }")
+            logger.debug(
+                f"{self.__class__.__name__}: l'indice correct"
+                f" {self.index_bonne_reponse}"
+                f" n'est pas dans la liste des choix: {self.choix = }"
+            )
             return False
 
         return True
@@ -218,7 +227,10 @@ class QuestionLibre(Question):
         """
 
         if not self.rep_attendue or self.rep_attendue.isspace():
-            logger.debug(f"{self.__class__.__name__}: réponse attendue vide: '{self.rep_attendue = }'")
+            logger.debug(
+                f"{self.__class__.__name__}: réponse attendue vide:"
+                f" '{self.rep_attendue = }'"
+            )
             return False
 
         return True

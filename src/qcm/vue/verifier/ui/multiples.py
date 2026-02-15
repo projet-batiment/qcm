@@ -49,7 +49,9 @@ class CorrectionQCMultiplesUI(CorrectionQCUI):
             etat_var = BooleanVar(value=i in self.reponse.reponses_choisies)
             self.vars_etat.append(etat_var)
 
-            corr_var = BooleanVar(value=i in self.reponse.question.index_bonnes_reponses)
+            corr_var = BooleanVar(
+                value=i in self.reponse.question.index_bonnes_reponses
+            )
             self.vars_etat.append(corr_var)
 
             each_check = Checkbutton(each_frame, variable=etat_var)
